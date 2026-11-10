@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100b20">
+  <title>BIBOU OS | Sensores e Energia</title>
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/sensores.css">
+  <script src="../js/sensores.js" defer></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="logo">
+      <span class="logo-star">✦</span>
+      BIBOU <span>OS</span>
+    </a>
+
+    <div class="menu-label">MENU PRINCIPAL</div>
+
+    <nav class="menu" aria-label="Menu principal">
+      <a class="menu-item" href="dashboard.html">
+        <span>⌂</span> Início
+      </a>
+      <a class="menu-item" href="conversar.html">
+        <span>☏</span> Conversar
+      </a>
+      <a class="menu-item" href="controle.html">
+        <span>✥</span> Controle
+      </a>
+      <a class="menu-item" href="expressoes.html">
+        <span>☺</span> Expressões
+      </a>
+      <a class="menu-item" href="memoria.html">
+        <span>✧</span> Memória
+      </a>
+      <a class="menu-item ativo" href="sensores.html"
+         aria-current="page">
+        <span>◈</span> Sensores
+      </a>
+      <a class="menu-item" href="#energia">
+        <span>ϟ</span> Energia
+      </a>
+      <button class="menu-item" data-page="Configurações">
+        <span>⚙</span> Configurações
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="mini-robo">🤖</div>
+      <strong>BIBOU OS</strong>
+      <small>Versão demonstrativa 0.7</small>
+    </div>
+  </aside>
+
+  <div class="conteudo">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="menuToggle" class="menu-toggle"
+                aria-label="Abrir menu"
+                aria-expanded="false">☰</button>
+        <div>
+          <span class="topbar-label">MONITORAMENTO VIRTUAL</span>
+          <h1>Sensores <span>✦</span></h1>
+        </div>
+      </div>
+
+      <div class="status-demo">
+        <span class="status-dot"></span>
+        Modo demonstração
+      </div>
+    </header>
+
+    <main>
+      <section class="sen-hero">
+        <div>
+          <span class="sen-label">✦ CENTRAL DE MONITORAMENTO</span>
+          <h2>Como está o BIBOU?</h2>
+          <p>
+            Acompanhe leituras virtuais, energia e
+            uma simulação da base de recarga.
+          </p>
+        </div>
+        <span class="sen-hero-icon">🤖🔋</span>
+      </section>
+
+      <div class="sen-toolbar">
+        <div class="sen-live">
+          <span class="sen-pulse"></span>
+          <span id="estadoSimulacao">Simulação ativa</span>
+        </div>
+
+        <div class="sen-toolbar-actions">
+          <button id="alternarSimulacao" class="sen-button-outline">
+            ⏸ Pausar leituras
+          </button>
+          <button id="novasLeituras" class="sen-button-primary">
+            ↻ Atualizar sensores
+          </button>
+        </div>
+      </div>
+
+      <div class="sen-grid">
+
+        <!-- BATERIA -->
+        <section class="card sen-card" id="energia">
+          <div class="sen-heading">
+            <div>
+              <span class="sen-label">ENERGIA</span>
+              <h2>Bateria do BIBOU</h2>
+            </div>
+            <span class="sen-heading-icon">🔋</span>
+          </div>
+
+          <div class="sen-battery-area">
+            <div class="sen-battery-ring" id="anelBateria">
+              <div class="sen-battery-inner">
+                <span id="bateriaValor">78%</span>
+                <small>BATERIA</small>
+              </div>
+            </div>
+
+            <div class="sen-battery-info">
+              <span id="bateriaStatus" class="sen-status">
+                ● Em uso
+              </span>
+              <p>Autonomia estimada</p>
+              <strong id="autonomiaValor">3h 54min</strong>
+              <small>Estimativa fictícia para demonstração</small>
+            </div>
+          </div>
+
+          <div class="sen-metrics">
+            <div>
+              <small>Tensão simulada</small>
+              <strong id="tensaoValor">7,80 V</strong>
+            </div>
+            <div>
+              <small>Consumo simulado</small>
+              <strong id="consumoValor">2,4 W</strong>
+            </div>
+          </div>
+
+          <div class="sen-control">
+            <label for="ajusteBateria">
+              Ajustar bateria para testes
+            </label>
+            <input id="ajusteBateria" type="range"
+                   min="0" max="100" value="78">
+            <div class="sen-range-labels">
+              <span>0%</span><span>100%</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- DISTÂNCIAS -->
+        <section class="card sen-card">
+          <div class="sen-heading">
+            <div>
+              <span class="sen-label">PERCEPÇÃO</span>
+              <h2>Detecção de obstáculos</h2>
+            </div>
+            <span class="sen-heading-icon">📡</span>
+          </div>
+
+          <p class="sen-description">
+            Distâncias fictícias de três direções.
+          </p>
+
+          <div class="sen-radar">
+            <div class="sen-radar-circle circle-one"></div>
+            <div class="sen-radar-circle circle-two"></div>
+            <div class="sen-radar-circle circle-three"></div>
+            <div class="sen-radar-sweep"></div>
+            <span class="sen-radar-robot">🤖</span>
+            <span class="sen-radar-dot dot-one"></span>
+            <span class="sen-radar-dot dot-two"></span>
+            <span class="sen-radar-dot dot-three"></span>
+          </div>
+
+          <div class="sen-distance-list">
+            <div class="sen-distance-item">
+              <span>⬆ Frente</span>
+              <strong id="distFrente">85 cm</strong>
+              <div class="sen-bar">
+                <span id="barraFrente"></span>
+              </div>
+            </div>
+            <div class="sen-distance-item">
+              <span>⬅ Esquerda</span>
+              <strong id="distEsquerda">120 cm</strong>
+              <div class="sen-bar">
+                <span id="barraEsquerda"></span>
+              </div>
+            </div>
+            <div class="sen-distance-item">
+              <span>➡ Direita</span>
+              <strong id="distDireita">65 cm</strong>
+              <div class="sen-bar">
+                <span id="barraDireita"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sen-alert" id="alertaObstaculo"
+               role="status" aria-live="polite">
+            ✨ Nenhum obstáculo próximo.
+          </div>
+        </section>
+
+        <!-- INCLINAÇÃO -->
+        <section class="card sen-card">
+          <div class="sen-heading">
+            <div>
+              <span class="sen-label">ORIENTAÇÃO</span>
+              <h2>Inclinação e equilíbrio</h2>
+            </div>
+            <span class="sen-heading-icon">🧭</span>
+          </div>
+
+          <div class="sen-tilt-stage">
+            <div class="sen-tilt-horizon"></div>
+            <div class="sen-tilt-robot" id="roboInclinacao">
+              🤖
+            </div>
+          </div>
+
+          <div class="sen-metrics">
+            <div>
+              <small>Inclinação lateral</small>
+              <strong id="inclinacaoLateral">0°</strong>
+            </div>
+            <div>
+              <small>Inclinação frontal</small>
+              <strong id="inclinacaoFrontal">0°</strong>
+            </div>
+          </div>
+
+          <div class="sen-control">
+            <label for="ajusteInclinacao">
+              Testar inclinação lateral
+            </label>
+            <input id="ajusteInclinacao" type="range"
+                   min="-30" max="30" value="0">
+            <div class="sen-range-labels">
+              <span>-30°</span><span>0°</span><span>+30°</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- MOVIMENTAÇÃO -->
+        <section class="card sen-card">
+          <div class="sen-heading">
+            <div>
+              <span class="sen-label">MOTORES</span>
+              <h2>Movimentação virtual</h2>
+            </div>
+            <span class="sen-heading-icon">⚙️</span>
+          </div>
+
+          <div class="sen-motor-status">
+            <span id="motorIcone">🛞</span>
+            <div>
+              <small>Estado dos motores</small>
+              <strong id="motorEstado">Em repouso</strong>
+            </div>
+          </div>
+
+          <div class="sen-metrics">
+            <div>
+              <small>Roda esquerda</small>
+              <strong id="rpmEsquerda">0 RPM</strong>
+            </div>
+            <div>
+              <small>Roda direita</small>
+              <strong id="rpmDireita">0 RPM</strong>
+            </div>
+          </div>
+
+          <div class="sen-control">
+            <label for="ajusteMotores">
+              Velocidade simulada dos motores
+            </label>
+            <input id="ajusteMotores" type="range"
+                   min="0" max="100" value="0">
+            <div class="sen-range-labels">
+              <span>Parado</span>
+              <strong id="motorPercentual">0%</strong>
+              <span>Máximo</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- RECARGA -->
+        <section class="card sen-card">
+          <div class="sen-heading">
+            <div>
+              <span class="sen-label">BASE INTELIGENTE</span>
+              <h2>Recarga automática</h2>
+            </div>
+            <span class="sen-heading-icon">⚡</span>
+          </div>
+
+          <p class="sen-description">
+            Simule o BIBOU procurando sua base,
+            aproximando-se e iniciando a recarga.
+          </p>
+
+          <div class="sen-charge-stage">
+            <div id="bibouRecarga" class="sen-charge-robot">
+              🤖
+            </div>
+            <div class="sen-charge-track"></div>
+            <div class="sen-charge-base">⚡</div>
+          </div>
+
+          <div class="sen-charge-status" aria-live="polite">
+            <small>ESTADO DA RECARGA</small>
+            <strong id="estadoRecarga">Fora da base</strong>
+            <p id="descricaoRecarga">
+              BIBOU está aguardando um comando.
+            </p>
+          </div>
+
+          <div class="sen-charge-buttons">
+            <button id="iniciarRecarga" class="sen-button-primary">
+              ⚡ Ir para a base
+            </button>
+            <button id="sairBase" class="sen-button-outline"
+                    disabled>
+              ↩ Sair da base
+            </button>
+          </div>
+        </section>
+
+        <!-- HISTÓRICO -->
+        <section class="card sen-card">
+          <div class="sen-heading">
+            <div>
+              <span class="sen-label">ATIVIDADE</span>
+              <h2>Eventos do sistema</h2>
+            </div>
+            <span class="sen-heading-icon">◷</span>
+          </div>
+
+          <div id="historicoSensores" class="sen-history"
+               aria-live="polite">
+            <div class="sen-empty">
+              ✨ Os eventos aparecerão aqui!
+            </div>
+          </div>
+
+          <button id="limparHistorico" class="sen-button-outline sen-full">
+            ↺ Limpar histórico
+          </button>
+        </section>
+
+      </div>
+
+      <div class="sen-disclaimer">
+        <strong>💜 Ambiente demonstrativo</strong>
+        <p>
+          Todos os valores, alertas, movimentos e
+          estados de recarga desta página são fictícios.
+          Eles não representam medições reais,
+          autonomia garantida ou funcionamento
+          de sistemas físicos de segurança.
+        </p>
+      </div>
+    </main>
+
+    <footer class="rodape">
+      <span>BIBOU OS • Desenvolvido com 💜</span>
+      <span>Sensores e Energia • Versão 0.7</span>
+    </footer>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" hidden></div>
+<div id="toast" class="toast" role="status"
+     aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100b20">
+  <title>BIBOU OS | Início</title>
+
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="../js/dashboard.js" defer></script>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar" id="sidebar">
+      <a href="index.html" class="logo">
+        <span class="logo-star">✦</span>
+        BIBOU <span>OS</span>
+      </a>
+
+      <div class="menu-label">MENU PRINCIPAL</div>
+
+      <nav class="menu" aria-label="Menu principal">
+        <a href="dashboard.html" class="menu-item ativo">
+          <span>⌂</span> Início
+        </a>
+        <button class="menu-item" data-page="Conversar">
+          <span>☏</span> Conversar
+        </button>
+        <button class="menu-item" data-page="Controle">
+          <span>✥</span> Controle
+        </button>
+        <button class="menu-item" data-page="Expressões">
+          <span>☺</span> Expressões
+        </button>
+        <button class="menu-item" data-page="Memória">
+          <span>✧</span> Memória
+        </button>
+        <button class="menu-item" data-page="Sensores">
+          <span>◈</span> Sensores
+        </button>
+        <button class="menu-item" data-page="Energia">
+          <span>ϟ</span> Energia
+        </button>
+        <button class="menu-item" data-page="Configurações">
+          <span>⚙</span> Configurações
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="mini-robo">🤖</div>
+        <strong>BIBOU OS</strong>
+        <small>Versão demonstrativa 0.2</small>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <div class="conteudo">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menuToggle" class="menu-toggle"
+                  aria-label="Abrir menu"
+                  aria-expanded="false">☰</button>
+          <div>
+            <span class="topbar-label">PAINEL PRINCIPAL</span>
+            <h1>Meu BIBOU <span>✦</span></h1>
+          </div>
+        </div>
+
+        <div class="status-demo">
+          <span class="status-dot"></span>
+          Modo demonstração
+        </div>
+      </header>
+
+      <main>
+        <!-- BOAS-VINDAS -->
+        <section class="hero">
+          <div class="hero-texto">
+            <span class="etiqueta">✦ OLÁ, HUMANO!</span>
+            <h2>Que bom ter você <em>por aqui!</em></h2>
+            <p>
+              Eu sou o BIBOU, seu companheiro robótico!
+              Que tal explorar tudo o que podemos fazer?
+            </p>
+            <button class="botao-principal"
+                    data-action="cumprimentar">
+              Dizer oi ao BIBOU <span>♡</span>
+            </button>
+          </div>
+
+          <div class="hero-robo">
+            <div class="halo"></div>
+            <div class="robo">
+              <div class="antena"></div>
+              <div class="cabeca">
+                <div class="visor">
+                  <div class="olhos">
+                    <span class="olho"></span>
+                    <span class="olho"></span>
+                  </div>
+                  <div class="boca"></div>
+                </div>
+              </div>
+              <div class="corpo">
+                <span class="coracao">♥</span>
+              </div>
+            </div>
+            <span class="estrela estrela-1">✧</span>
+            <span class="estrela estrela-2">✦</span>
+          </div>
+        </section>
+
+        <!-- STATUS -->
+        <div class="section-title">
+          <h2>Visão geral</h2>
+          <span>Informações simuladas</span>
+        </div>
+
+        <section class="status-grid">
+          <article class="card status-card">
+            <div class="card-top">
+              <span class="card-icon">🤖</span>
+              <span class="tag">DEMO</span>
+            </div>
+            <small>Estado do BIBOU</small>
+            <h3 id="estadoRobo">Descansando</h3>
+            <p id="descricaoEstado">Pronto para explorar!</p>
+          </article>
+
+          <article class="card status-card">
+            <div class="card-top">
+              <span class="card-icon">🔋</span>
+              <span class="tag">SIMULADO</span>
+            </div>
+            <small>Bateria</small>
+            <h3 id="bateriaValor">85%</h3>
+            <div class="barra">
+              <div class="barra-progresso" style="width:85%"></div>
+            </div>
+          </article>
+
+          <article class="card status-card">
+            <div class="card-top">
+              <span class="card-icon">📡</span>
+              <span class="tag">DEMO</span>
+            </div>
+            <small>Conexão</small>
+            <h3>Não conectado</h3>
+            <p>Interface em demonstração</p>
+          </article>
+
+          <article class="card status-card">
+            <div class="card-top">
+              <span class="card-icon">💜</span>
+              <span class="tag">SIMULADO</span>
+            </div>
+            <small>Humor do BIBOU</small>
+            <h3 id="humorRobo">Feliz</h3>
+            <p id="descricaoHumor">Animado para conversar!</p>
+          </article>
+        </section>
+
+        <!-- AÇÕES -->
+        <div class="section-title">
+          <h2>O que vamos fazer?</h2>
+          <span>Escolha uma atividade</span>
+        </div>
+
+        <section class="acoes-grid">
+          <button class="acao" data-page="Conversar">
+            <span class="acao-icone">💬</span>
+            <strong>Conversar</strong>
+            <small>Bater um papo</small>
+          </button>
+
+          <button class="acao" data-page="Controle">
+            <span class="acao-icone">🎮</span>
+            <strong>Controlar</strong>
+            <small>Explorar movimentos</small>
+          </button>
+
+          <button class="acao" data-action="dancar">
+            <span class="acao-icone">🎵</span>
+            <strong>Dançar</strong>
+            <small>Uma dancinha virtual</small>
+          </button>
+
+          <button class="acao" data-page="Expressões">
+            <span class="acao-icone">🥰</span>
+            <strong>Expressões</strong>
+            <small>Escolher emoções</small>
+          </button>
+        </section>
+
+        <!-- ATIVIDADE -->
+        <section class="atividade card">
+          <div class="section-title atividade-titulo">
+            <h2>Atividade recente</h2>
+            <span>Somente nesta sessão</span>
+          </div>
+
+          <div id="listaAtividades" class="lista-atividades">
+            <div class="atividade-item">
+              <span class="atividade-icone">✨</span>
+              <div>
+                <strong>Bem-vindo ao BIBOU OS!</strong>
+                <small>Modo demonstração iniciado</small>
+              </div>
+              <span class="hora">Agora</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="rodape">
+        <span>BIBOU OS • Desenvolvido com 💜</span>
+        <span>Interface demonstrativa — sem conexão física</span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- NOTIFICAÇÃO -->
+  <div id="toast" class="toast" role="status"
+       aria-live="polite"></div>
+
+  <!-- MENU MOBILE -->
+  <div class="overlay" id="overlay" hidden></div>
+</body>
+</html>

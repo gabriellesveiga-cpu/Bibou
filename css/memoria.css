@@ -1,0 +1,506 @@
+
+/* BIBOU OS - MEMÓRIA E PERSONALIDADE */
+
+.mem-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 35px;
+  border: 1px solid #c49aff35;
+  border-radius: 24px;
+  background: linear-gradient(110deg, #392355, #26193f);
+}
+
+.mem-label {
+  color: var(--roxo);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.mem-hero .mem-label { color: var(--rosa); }
+
+.mem-hero h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  margin: 12px 0;
+}
+
+.mem-hero p {
+  color: var(--cinza);
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 550px;
+}
+
+.mem-hero-icon { font-size: 54px; }
+
+.mem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.mem-card {
+  min-width: 0;
+  padding: 24px;
+}
+
+.mem-card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mem-card-heading h2 {
+  font-size: 19px;
+  margin-top: 6px;
+}
+
+.mem-card-heading > span { font-size: 24px; }
+
+.mem-description {
+  font-size: 12px;
+  color: var(--cinza);
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+/* PERSONALIDADE */
+
+.mem-personalidades {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.mem-personalidade {
+  border: 1px solid #a978ff30;
+  background: #a978ff10;
+  border-radius: 16px;
+  padding: 17px 10px;
+  color: var(--branco);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  transition: .2s;
+}
+
+.mem-personalidade:hover {
+  background: #a978ff25;
+  transform: translateY(-3px);
+}
+
+.mem-personalidade.selecionada {
+  border-color: var(--rosa);
+  background: #a978ff35;
+  box-shadow: 0 0 22px #a978ff20;
+}
+
+.mem-personalidade > span { font-size: 29px; }
+.mem-personalidade strong { font-size: 13px; }
+
+.mem-personalidade small {
+  font-size: 10px;
+  color: var(--cinza);
+  text-align: center;
+}
+
+/* PRÉVIA DO BIBOU */
+
+.mem-preview {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #a978ff12;
+  border: 1px solid #a978ff25;
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 24px;
+}
+
+.mem-robo {
+  width: 115px;
+  min-width: 115px;
+  height: 125px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: memFlutuar 4s ease-in-out infinite;
+}
+
+.mem-antena {
+  width: 5px;
+  height: 22px;
+  background: var(--lilas);
+  border-radius: 5px;
+  position: relative;
+}
+
+.mem-antena::before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: -9px;
+  left: -5px;
+  background: var(--rosa);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--rosa);
+}
+
+.mem-cabeca {
+  width: 112px;
+  height: 89px;
+  background: linear-gradient(145deg, #f8ecff, #a994df);
+  border: 4px solid #e6d4ff;
+  border-radius: 37px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 24px #a978ff66;
+}
+
+.mem-visor {
+  width: 89px;
+  height: 65px;
+  background: #160f29;
+  border-radius: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.mem-olhos {
+  display: flex;
+  gap: 22px;
+}
+
+.mem-olhos span {
+  width: 11px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--lilas);
+  box-shadow: 0 0 10px var(--roxo);
+  animation: memPiscar 5s infinite;
+}
+
+.mem-boca {
+  width: 20px;
+  height: 10px;
+  border-bottom: 3px solid var(--rosa);
+  border-radius: 50%;
+}
+
+.mem-preview-texto { min-width: 0; }
+
+.mem-preview-texto small {
+  color: var(--rosa);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.mem-preview-texto strong {
+  display: block;
+  font-size: 19px;
+  margin: 7px 0;
+  color: var(--lilas);
+}
+
+.mem-preview-texto p {
+  color: var(--cinza);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* FORMULÁRIOS */
+
+.mem-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mem-form label {
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 8px;
+  color: var(--lilas);
+}
+
+.mem-form input,
+.mem-form select,
+.mem-form textarea {
+  width: 100%;
+  min-width: 0;
+  background: #150e26;
+  border: 1px solid #a978ff35;
+  border-radius: 12px;
+  color: var(--branco);
+  padding: 13px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.mem-form textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.mem-form input:focus,
+.mem-form select:focus,
+.mem-form textarea:focus {
+  border-color: var(--roxo);
+  box-shadow: 0 0 0 3px #a978ff18;
+}
+
+.mem-form input::placeholder,
+.mem-form textarea::placeholder {
+  color: #9584aa;
+}
+
+.mem-form select option {
+  background: #211733;
+}
+
+.mem-primary {
+  background: linear-gradient(120deg, #c69aff, #ffabe4);
+  color: #21132f;
+  border: 0;
+  border-radius: 13px;
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 900;
+  transition: .2s;
+}
+
+.mem-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px #a978ff35;
+}
+
+/* LEMBRANÇAS */
+
+.mem-counter {
+  font-size: 11px !important;
+  color: var(--lilas);
+  background: #a978ff20;
+  border-radius: 20px;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.mem-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.mem-vazio {
+  text-align: center;
+  color: var(--cinza);
+  font-size: 12px;
+  padding: 28px 12px;
+  border: 1px dashed #a978ff35;
+  border-radius: 14px;
+}
+
+.mem-lembranca {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #a978ff10;
+  border: 1px solid #a978ff25;
+  border-radius: 14px;
+  padding: 15px;
+}
+
+.mem-lembranca-icone {
+  font-size: 24px;
+}
+
+.mem-lembranca-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mem-lembranca-info strong {
+  display: block;
+  font-size: 13px;
+  color: var(--lilas);
+  overflow-wrap: anywhere;
+}
+
+.mem-lembranca-info p {
+  color: var(--cinza);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 7px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.mem-lembranca-info small {
+  color: #9584aa;
+  font-size: 10px;
+}
+
+.mem-excluir {
+  border: 1px solid #ff9fe344;
+  background: #ff9fe315;
+  color: var(--rosa);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 16px;
+}
+
+.mem-excluir:hover {
+  background: #ff9fe330;
+}
+
+/* RESUMO */
+
+.mem-resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mem-resumo-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+  border: 1px solid #a978ff25;
+  background: #a978ff10;
+  border-radius: 14px;
+  min-width: 0;
+}
+
+.mem-resumo-item > span {
+  font-size: 23px;
+}
+
+.mem-resumo-item div { min-width: 0; }
+
+.mem-resumo-item small {
+  display: block;
+  color: var(--cinza);
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.mem-resumo-item strong {
+  display: block;
+  color: var(--lilas);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.mem-info {
+  margin-top: 24px;
+  padding: 17px;
+  border-radius: 14px;
+  background: #a978ff12;
+  border: 1px solid #a978ff25;
+}
+
+.mem-info strong {
+  color: var(--lilas);
+  font-size: 13px;
+}
+
+.mem-info p {
+  color: var(--cinza);
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+
+.mem-danger {
+  width: 100%;
+  margin-top: 17px;
+  padding: 14px;
+  background: #ff9fe312;
+  border: 1px solid #ff9fe355;
+  border-radius: 13px;
+  color: var(--rosa);
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.mem-danger:hover {
+  background: #ff9fe32b;
+}
+
+/* ANIMAÇÕES */
+
+@keyframes memFlutuar {
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes memPiscar {
+  0%, 43%, 47%, 100% { transform: scaleY(1); }
+  45% { transform: scaleY(.08); }
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1100px) {
+  .mem-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .mem-hero {
+    padding: 24px 20px;
+  }
+
+  .mem-hero-icon {
+    font-size: 34px;
+  }
+
+  .mem-card {
+    padding: 18px;
+  }
+
+  .mem-card-heading h2 {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 450px) {
+  .mem-preview {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .mem-robo {
+    transform: scale(.8);
+    width: 95px;
+    min-width: 95px;
+  }
+
+  .mem-resumo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mem-robo,
+  .mem-olhos span {
+    animation: none !important;
+  }
+}

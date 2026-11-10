@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100b20">
+  <title>BIBOU OS | Conversar</title>
+
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/conversar.css">
+  <script src="../js/conversar.js" defer></script>
+</head>
+<body>
+  <div class="app">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar" id="sidebar">
+      <a href="index.html" class="logo">
+        <span class="logo-star">✦</span>
+        BIBOU <span>OS</span>
+      </a>
+
+      <div class="menu-label">MENU PRINCIPAL</div>
+
+      <nav class="menu" aria-label="Menu principal">
+        <a class="menu-item" href="dashboard.html">
+          <span>⌂</span> Início
+        </a>
+        <a class="menu-item ativo" href="conversar.html"
+           aria-current="page">
+          <span>☏</span> Conversar
+        </a>
+        <button class="menu-item" data-page="Controle">
+          <span>✥</span> Controle
+        </button>
+        <button class="menu-item" data-page="Expressões">
+          <span>☺</span> Expressões
+        </button>
+        <button class="menu-item" data-page="Memória">
+          <span>✧</span> Memória
+        </button>
+        <button class="menu-item" data-page="Sensores">
+          <span>◈</span> Sensores
+        </button>
+        <button class="menu-item" data-page="Energia">
+          <span>ϟ</span> Energia
+        </button>
+        <button class="menu-item" data-page="Configurações">
+          <span>⚙</span> Configurações
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="mini-robo">🤖</div>
+        <strong>BIBOU OS</strong>
+        <small>Versão demonstrativa 0.3</small>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="conteudo conversa-conteudo">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menuToggle" class="menu-toggle"
+                  aria-label="Abrir menu"
+                  aria-expanded="false">☰</button>
+          <div>
+            <span class="topbar-label">CENTRAL DE CONVERSAS</span>
+            <h1>Conversar <span>✦</span></h1>
+          </div>
+        </div>
+        <div class="status-demo">
+          <span class="status-dot"></span>
+          Modo demonstração
+        </div>
+      </header>
+
+      <main class="chat-layout">
+
+        <!-- PERFIL DO BIBOU -->
+        <section class="perfil-bibou card">
+          <div class="perfil-brilho"></div>
+
+          <div class="avatar-bibou" aria-label="Rosto do BIBOU">
+            <div class="avatar-antena"></div>
+            <div class="avatar-cabeca">
+              <div class="avatar-visor">
+                <div class="avatar-olhos">
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="avatar-boca"></div>
+              </div>
+            </div>
+          </div>
+
+          <span class="perfil-etiqueta">✦ SEU COMPANHEIRO</span>
+          <h2>Oi, eu sou o BIBOU!</h2>
+          <p>
+            Estou aqui para conversar, aprender
+            e explorar novas ideias com você.
+          </p>
+
+          <div class="perfil-status">
+            <span class="status-dot"></span>
+            Chat demonstrativo
+          </div>
+
+          <div class="perfil-divisor"></div>
+
+          <h3>Que tal começar por aqui?</h3>
+
+          <div class="sugestoes">
+            <button class="sugestao"
+                    data-message="Oi, BIBOU!">
+              👋 Dizer oi
+            </button>
+            <button class="sugestao"
+                    data-message="O que você consegue fazer?">
+              ✨ Suas habilidades
+            </button>
+            <button class="sugestao"
+                    data-message="Me conte uma curiosidade!">
+              💡 Uma curiosidade
+            </button>
+            <button class="sugestao"
+                    data-message="Como você está hoje?">
+              💜 Como você está?
+            </button>
+          </div>
+
+          <p class="aviso-perfil">
+            As respostas são simuladas e não representam
+            uma inteligência artificial conectada.
+          </p>
+        </section>
+
+        <!-- CHAT -->
+        <section class="chat-painel card"
+                 aria-label="Conversa com o BIBOU">
+
+          <div class="chat-cabecalho">
+            <div class="chat-identidade">
+              <div class="chat-avatar">🤖</div>
+              <div>
+                <h2>BIBOU</h2>
+                <p>Seu amigo robótico • Demo</p>
+              </div>
+            </div>
+
+            <button id="limparChat" class="botao-limpar"
+                    title="Limpar conversa"
+                    aria-label="Limpar conversa">
+              ↻
+            </button>
+          </div>
+
+          <div id="mensagens" class="mensagens"
+               role="log" aria-live="polite"
+               aria-label="Mensagens da conversa">
+
+            <div class="mensagem mensagem-bibou">
+              <div class="mensagem-avatar">🤖</div>
+              <div class="mensagem-conteudo">
+                <div class="balao">
+                  Oii! 💜 Eu sou o BIBOU!
+                  Estou muito feliz que você veio conversar
+                  comigo. Sobre o que vamos falar hoje?
+                </div>
+                <small>BIBOU • Agora</small>
+              </div>
+            </div>
+          </div>
+
+          <div id="digitando" class="digitando" hidden>
+            <span>BIBOU está digitando</span>
+            <div class="pontos">
+              <i></i><i></i><i></i>
+            </div>
+          </div>
+
+          <form id="formChat" class="chat-entrada">
+            <button type="button" id="microfone"
+                    class="botao-microfone"
+                    aria-label="Microfone demonstrativo"
+                    title="Microfone demonstrativo">
+              🎙️
+            </button>
+
+            <input type="text" id="campoMensagem"
+                   placeholder="Escreva uma mensagem..."
+                   maxlength="500"
+                   autocomplete="off"
+                   aria-label="Sua mensagem"
+                   required>
+
+            <button type="submit" class="botao-enviar"
+                    aria-label="Enviar mensagem">
+              ➤
+            </button>
+          </form>
+
+          <p class="chat-aviso">
+            ✧ Modo demonstração — sem IA ou microfone real
+          </p>
+        </section>
+      </main>
+
+      <footer class="rodape">
+        <span>BIBOU OS • Desenvolvido com 💜</span>
+        <span>Versão demonstrativa 0.3</span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <div id="toast" class="toast"
+       role="status" aria-live="polite"></div>
+</body>
+</html>
+

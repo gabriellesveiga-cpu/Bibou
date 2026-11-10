@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#100b20">
+  <meta name="description" content="BIBOU OS - Seu companheiro robótico inteligente.">
+
+  <title>BIBOU OS | Boas-vindas</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/script.js" defer></script>
+</head>
+
+<body>
+  <div class="fundo">
+    <div class="luz luz-1"></div>
+    <div class="luz luz-2"></div>
+    <div class="luz luz-3"></div>
+  </div>
+
+  <header class="cabecalho">
+    <a href="index.html" class="logo">
+      <span class="logo-icone">✦</span>
+      BIBOU<span>OS</span>
+    </a>
+
+    <div class="modo-demo">
+      <span class="ponto-demo"></span>
+      Modo demonstração
+    </div>
+  </header>
+
+  <main class="principal">
+    <section class="apresentacao">
+
+      <div class="etiqueta">
+        <span>✧</span>
+        SEU COMPANHEIRO INTELIGENTE
+      </div>
+
+      <div class="robo-area">
+        <div class="circulo circulo-1"></div>
+        <div class="circulo circulo-2"></div>
+
+        <div class="robo">
+          <div class="antena">
+            <div class="antena-ponta"></div>
+          </div>
+
+          <div class="cabeca">
+            <div class="rosto">
+              <div class="olhos">
+                <div class="olho"></div>
+                <div class="olho"></div>
+              </div>
+              <div class="boca"></div>
+            </div>
+
+            <div class="bochecha bochecha-esq"></div>
+            <div class="bochecha bochecha-dir"></div>
+          </div>
+
+          <div class="sombra-robo"></div>
+        </div>
+
+        <span class="estrela estrela-1">✦</span>
+        <span class="estrela estrela-2">✧</span>
+        <span class="estrela estrela-3">✦</span>
+      </div>
+
+      <div class="conteudo">
+        <p class="saudacao">OLÁ, HUMANO! 💜</p>
+
+        <h1>
+          Eu sou o <span>BIBOU.</span>
+        </h1>
+
+        <p class="descricao">
+          Seu pequeno companheiro robótico, cheio de
+          personalidade, curiosidade e tecnologia.
+          Pronto para descobrir tudo o que podemos
+          fazer juntos?
+        </p>
+
+        <button class="botao-comecar" id="botaoComecar">
+          Começar a explorar
+          <span aria-hidden="true">→</span>
+        </button>
+
+        <p class="mensagem-inferior">
+          ✨ Uma nova amizade tecnológica começa aqui.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <span>BIBOU OS • Versão demonstrativa 0.1</span>
+    <span>Feito com 💜 e tecnologia</span>
+  </footer>
+
+  <div class="modal-fundo" id="modal" hidden>
+    <div class="modal" role="dialog"
+         aria-modal="true"
+         aria-labelledby="modalTitulo">
+
+      <div class="modal-icone">🤖</div>
+
+      <h2 id="modalTitulo">Estamos começando!</h2>
+
+      <p>
+        O BIBOU OS está ganhando vida.
+        Em breve, você poderá explorar todas
+        as funcionalidades do seu robô!
+      </p>
+
+      <button id="fecharModal" class="botao-modal">
+        Entendi!
+      </button>
+    </div>
+  </div>
+</body>
+</html>

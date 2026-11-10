@@ -1,0 +1,630 @@
+
+/* BIBOU OS - CONEXÃO E CONFIGURAÇÕES */
+
+.cfg-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 35px;
+  border-radius: 24px;
+  border: 1px solid #c49aff35;
+  background: linear-gradient(110deg, #392355, #26193f);
+}
+
+.cfg-label {
+  color: #a978ff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.cfg-hero .cfg-label {
+  color: #ff9fe3;
+}
+
+.cfg-hero h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  margin: 12px 0;
+}
+
+.cfg-hero p {
+  color: #b9aecb;
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 550px;
+}
+
+.cfg-hero-icon {
+  font-size: 53px;
+  white-space: nowrap;
+}
+
+.cfg-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.cfg-card {
+  padding: 24px;
+  min-width: 0;
+}
+
+.cfg-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cfg-heading h2 {
+  font-size: 19px;
+  margin-top: 6px;
+}
+
+.cfg-heading-icon {
+  font-size: 25px;
+}
+
+.cfg-primary,
+.cfg-secondary,
+.cfg-danger,
+.cfg-small-button {
+  border-radius: 13px;
+  padding: 13px 16px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  transition: transform .2s, filter .2s;
+}
+
+.cfg-primary,
+.cfg-small-button {
+  background: linear-gradient(120deg, #c69aff, #ffabe4);
+  color: #21132f;
+  border: 0;
+}
+
+.cfg-secondary {
+  color: #d9baff;
+  background: #a978ff15;
+  border: 1px solid #a978ff55;
+}
+
+.cfg-danger {
+  color: #ff9fe3;
+  background: #ff9fe315;
+  border: 1px solid #ff9fe355;
+}
+
+.cfg-primary:hover:not(:disabled),
+.cfg-secondary:hover:not(:disabled),
+.cfg-danger:hover:not(:disabled),
+.cfg-small-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.cfg-primary:disabled,
+.cfg-secondary:disabled,
+.cfg-small-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.cfg-full {
+  width: 100%;
+}
+
+/* DISPOSITIVO */
+
+.cfg-device {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 22px;
+  background: #a978ff12;
+  border: 1px solid #a978ff30;
+  border-radius: 19px;
+}
+
+.cfg-robot {
+  width: 135px;
+  min-width: 135px;
+  height: 155px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: cfgFloat 4s ease-in-out infinite;
+}
+
+.cfg-antenna {
+  width: 6px;
+  height: 25px;
+  background: #d9baff;
+  border-radius: 6px;
+  position: relative;
+}
+
+.cfg-antenna::before {
+  content: "";
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  left: -5.5px;
+  top: -10px;
+  background: #ff9fe3;
+  border-radius: 50%;
+  box-shadow: 0 0 17px #ff9fe3;
+}
+
+.cfg-head {
+  width: 132px;
+  height: 104px;
+  border-radius: 43px;
+  border: 4px solid #e6d4ff;
+  background: linear-gradient(145deg, #f8ecff, #a994df);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 28px #a978ff55;
+}
+
+.cfg-screen {
+  width: 106px;
+  height: 76px;
+  background: #160f29;
+  border-radius: 31px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.cfg-eyes {
+  display: flex;
+  gap: 27px;
+}
+
+.cfg-eyes span {
+  width: 13px;
+  height: 23px;
+  border-radius: 50%;
+  background: #d9baff;
+  box-shadow: 0 0 12px #a978ff;
+  animation: cfgBlink 5s infinite;
+}
+
+.cfg-mouth {
+  width: 25px;
+  height: 12px;
+  border-bottom: 3px solid #ff9fe3;
+  border-radius: 50%;
+}
+
+.cfg-device-info {
+  min-width: 0;
+}
+
+.cfg-device-info > small {
+  color: #ff9fe3;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.cfg-device-info h3 {
+  color: #f8ecff;
+  font-size: 25px;
+  margin: 8px 0 13px;
+  overflow-wrap: anywhere;
+}
+
+.cfg-status {
+  display: inline-block;
+  padding: 8px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.cfg-status.disconnected {
+  background: #ffcc8315;
+  color: #ffcc83;
+}
+
+.cfg-status.searching {
+  background: #a978ff25;
+  color: #d9baff;
+}
+
+.cfg-status.connected {
+  background: #78e7b120;
+  color: #9ff2c8;
+}
+
+.cfg-device-info p {
+  color: #b9aecb;
+  font-size: 11px;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+.cfg-connection-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.cfg-connection-actions button {
+  flex: 1;
+}
+
+.cfg-search-result {
+  margin-top: 17px;
+}
+
+.cfg-search-result[hidden] {
+  display: none;
+}
+
+.cfg-found-device {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border-radius: 15px;
+  background: #a978ff15;
+  border: 1px solid #a978ff45;
+}
+
+.cfg-found-device > span {
+  font-size: 27px;
+}
+
+.cfg-found-device > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.cfg-found-device strong {
+  display: block;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.cfg-found-device small {
+  display: block;
+  color: #b9aecb;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.cfg-small-button {
+  padding: 10px 12px;
+}
+
+.cfg-notice,
+.cfg-warning {
+  padding: 17px;
+  margin-top: 20px;
+  background: #a978ff12;
+  border: 1px solid #a978ff25;
+  border-radius: 15px;
+}
+
+.cfg-notice strong,
+.cfg-warning strong {
+  color: #d9baff;
+  font-size: 12px;
+}
+
+.cfg-notice p,
+.cfg-warning p {
+  color: #b9aecb;
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+
+/* FORMULÁRIO */
+
+.cfg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cfg-form > label {
+  color: #d9baff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cfg-form > input,
+.cfg-form > select {
+  width: 100%;
+  background: #150e26;
+  border: 1px solid #a978ff35;
+  border-radius: 12px;
+  color: #faf6ff;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 13px;
+  outline: none;
+}
+
+.cfg-form > input:focus,
+.cfg-form > select:focus {
+  border-color: #a978ff;
+  box-shadow: 0 0 0 3px #a978ff18;
+}
+
+.cfg-form select option {
+  background: #211733;
+}
+
+.cfg-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid #a978ff20;
+}
+
+.cfg-toggle-row strong,
+.cfg-toggle-row small {
+  display: block;
+}
+
+.cfg-toggle-row strong {
+  font-size: 13px;
+}
+
+.cfg-toggle-row small {
+  color: #b9aecb;
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.cfg-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 27px;
+  flex-shrink: 0;
+}
+
+.cfg-switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.cfg-switch-track {
+  position: absolute;
+  inset: 0;
+  background: #51405f;
+  border-radius: 30px;
+  transition: .2s;
+}
+
+.cfg-switch-track::before {
+  content: "";
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  top: 4px;
+  left: 4px;
+  background: white;
+  border-radius: 50%;
+  transition: .2s;
+}
+
+.cfg-switch input:checked + .cfg-switch-track {
+  background: #a978ff;
+}
+
+.cfg-switch input:checked + .cfg-switch-track::before {
+  transform: translateX(21px);
+}
+
+.cfg-switch input:focus-visible + .cfg-switch-track {
+  outline: 3px solid #ff9fe3;
+  outline-offset: 3px;
+}
+
+.cfg-range-group {
+  padding: 17px 0;
+}
+
+.cfg-range-heading,
+.cfg-range-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cfg-range-heading {
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.cfg-range-heading strong {
+  color: #ff9fe3;
+}
+
+.cfg-range-group input {
+  width: 100%;
+  accent-color: #a978ff;
+  cursor: pointer;
+}
+
+.cfg-range-labels {
+  color: #a99abf;
+  font-size: 10px;
+  margin-top: 8px;
+}
+
+/* SISTEMA */
+
+.cfg-system-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.cfg-system-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 16px 0;
+  border-bottom: 1px solid #a978ff20;
+  font-size: 12px;
+}
+
+.cfg-system-list span {
+  color: #b9aecb;
+}
+
+.cfg-system-list strong {
+  color: #d9baff;
+  text-align: right;
+}
+
+.cfg-system-footer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 15px;
+  background: #a978ff12;
+}
+
+.cfg-system-footer > span {
+  color: #ff9fe3;
+  font-size: 35px;
+}
+
+.cfg-system-footer p {
+  color: #b9aecb;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* MANUTENÇÃO */
+
+.cfg-maintenance {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cfg-maintenance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 16px;
+  background: #a978ff10;
+  border: 1px solid #a978ff25;
+  border-radius: 15px;
+}
+
+.cfg-maintenance-item strong {
+  font-size: 13px;
+}
+
+.cfg-maintenance-item p {
+  color: #b9aecb;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 7px;
+}
+
+/* EFEITOS */
+
+.cfg-no-animation .cfg-robot,
+.cfg-no-animation .cfg-eyes span {
+  animation: none !important;
+}
+
+@keyframes cfgFloat {
+  50% { transform: translateY(-9px); }
+}
+
+@keyframes cfgBlink {
+  0%, 43%, 47%, 100% { transform: scaleY(1); }
+  45% { transform: scaleY(.08); }
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1100px) {
+  .cfg-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .cfg-hero {
+    padding: 24px 20px;
+  }
+
+  .cfg-hero-icon {
+    font-size: 34px;
+  }
+
+  .cfg-card {
+    padding: 18px;
+  }
+
+  .cfg-heading h2 {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 450px) {
+  .cfg-device {
+    flex-direction: column;
+    text-align: center;
+    padding: 17px;
+  }
+
+  .cfg-connection-actions,
+  .cfg-maintenance-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cfg-found-device {
+    flex-wrap: wrap;
+  }
+
+  .cfg-system-list > div {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cfg-system-list strong {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cfg-robot,
+  .cfg-eyes span {
+    animation: none !important;
+  }
+}
