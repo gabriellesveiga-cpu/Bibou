@@ -1,7 +1,12 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-  const $ = id => document.getElementById(id);
+/* ==========================================
+   BIBOU OS — CONFIGURAÇÕES PREMIUM
+========================================== */
 
+document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
   const CHAVE = "bibou_os_configuracoes_v1";
 
   const sidebar = $("sidebar");
@@ -17,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let timerBusca = null;
   let timerConexao = null;
   let timerToast = null;
-
   let conexao = "desconectado";
 
   const padrao = () => ({
@@ -29,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     intensidade: 70
   });
 
-  // CARREGAMENTO
   function carregar() {
     try {
       const salvo = JSON.parse(localStorage.getItem(CHAVE));
@@ -39,7 +42,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return padrao();
       }
 
-      return { ...padrao(), ...salvo };
+      return {
+        ...padrao(),
+        ...salvo,
+        nome: typeof salvo.nome === "string"
+          ? salvo.nome : "BIBOU",
+        modo: ["wifi", "bluetooth", "automatico"].includes(salvo.modo)
+          ? salvo.modo : "wifi",
+        sons: typeof salvo.sons === "boolean"
+          ? salvo.sons : true,
+        notificacoes: typeof salvo.notificacoes === "boolean"
+          ? salvo.notificacoes : true,
+        animacoes: typeof salvo.animacoes === "boolean"
+          ? salvo.animacoes : true,
+        intensidade: Number.isFinite(Number(salvo.intensidade))
+          ? Math.max(0, Math.min(100, Number(salvo.intensidade)))
+          : 70
+      };
     } catch {
       return padrao();
     }
@@ -50,38 +69,48 @@ document.addEventListener("DOMContentLoaded", () => {
   function salvar() {
     try {
       localStorage.setItem(CHAVE, JSON.stringify(dados));
+
+      window.dispatchEvent(
+        new CustomEvent("bibou:preferencias", {
+          detail: { origem: "configuracoes" }
+        })
+      );
+
+      window.BibouPreferencias?.atualizarElementos?.();
+
       return true;
     } catch {
-      mostrarToast(
-        "Não foi possível salvar neste navegador.",
-        true
-      );
+      mostrarToast("Não foi possível salvar neste navegador.", true);
       return false;
     }
   }
 
   // MENU
+
   function fecharMenu() {
-    sidebar.classList.remove("aberto");
-    overlay.hidden = true;
-    menuToggle.setAttribute("aria-expanded", "false");
+    sidebar?.classList.remove("aberto");
+
+    if (overlay) overlay.hidden = true;
+
+    menuToggle?.setAttribute("aria-expanded", "false");
   }
 
-  menuToggle.addEventListener("click", () => {
-    const abrir = !sidebar.classList.contains("aberto");
+  menuToggle?.addEventListener("click", () => {
+    const aberto = sidebar.classList.toggle("aberto");
 
-    sidebar.classList.toggle("aberto", abrir);
-    overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+    if (overlay) overlay.hidden = !aberto;
+
+    menuToggle.setAttribute("aria-expanded", String(aberto));
   });
 
-  overlay.addEventListener("click", fecharMenu);
+  overlay?.addEventListener("click", fecharMenu);
 
   document.addEventListener("keydown", evento => {
     if (evento.key === "Escape") fecharMenu();
   });
 
   // NOTIFICAÇÕES
+
   function mostrarToast(mensagem, forcar = false) {
     if (!dados.notificacoes && !forcar) return;
 
@@ -96,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // SOM LOCAL OPCIONAL
+
   function tocarSom() {
     if (!dados.sons) return;
 
@@ -110,9 +140,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const ganho = contexto.createGain();
 
       oscilador.type = "sine";
+
       oscilador.frequency.setValueAtTime(
         620, contexto.currentTime
       );
+
       oscilador.frequency.exponentialRampToValueAtTime(
         840, contexto.currentTime + 0.12
       );
@@ -120,9 +152,11 @@ document.addEventListener("DOMContentLoaded", () => {
       ganho.gain.setValueAtTime(
         0.0001, contexto.currentTime
       );
+
       ganho.gain.exponentialRampToValueAtTime(
         0.035, contexto.currentTime + 0.02
       );
+
       ganho.gain.exponentialRampToValueAtTime(
         0.0001, contexto.currentTime + 0.16
       );
@@ -137,11 +171,12 @@ document.addEventListener("DOMContentLoaded", () => {
         contexto.close().catch(() => {});
       };
     } catch {
-      // O aplicativo continua funcionando sem áudio.
+      // O aplicativo continua sem áudio.
     }
   }
 
-  // CONFIGURAÇÕES
+  // APLICAR PREFERÊNCIAS
+
   function aplicarConfiguracoes() {
     $("nomeRobo").value = dados.nome;
     $("modoConexao").value = dados.modo;
@@ -151,26 +186,33 @@ document.addEventListener("DOMContentLoaded", () => {
     $("intensidadeEfeitos").value = dados.intensidade;
 
     $("intensidadeValor").textContent =
-      dados.intensidade + "%";
+      `${dados.intensidade}%`;
 
     $("nomeDispositivo").textContent = dados.nome;
     $("nomeEncontrado").textContent = dados.nome;
+
+    document.querySelectorAll("[data-bibou-nome]")
+      .forEach(elemento => {
+        elemento.textContent = dados.nome;
+      });
 
     document.body.classList.toggle(
       "cfg-no-animation",
       !dados.animacoes
     );
 
-    const intensidade = Number(dados.intensidade) / 100;
+    const intensidade = dados.intensidade / 100;
+    const robo = document.querySelector(".cfg-robot");
 
-    document.querySelector(".cfg-robot").style.filter =
-      `drop-shadow(0 0 ${intensidade * 25}px
-      rgba(169,120,255,${intensidade * 0.7}))`;
+    if (robo) {
+      robo.style.filter =
+        `drop-shadow(0 0 ${intensidade * 25}px rgba(169,120,255,${intensidade * 0.7}))`;
+    }
   }
 
   $("intensidadeEfeitos").addEventListener("input", () => {
     $("intensidadeValor").textContent =
-      $("intensidadeEfeitos").value + "%";
+      `${$("intensidadeEfeitos").value}%`;
   });
 
   $("formConfiguracoes").addEventListener("submit", evento => {
@@ -183,6 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const anteriores = { ...dados };
+
     dados.nome = nome;
     dados.modo = $("modoConexao").value;
     dados.sons = $("sonsAtivos").checked;
@@ -192,15 +236,30 @@ document.addEventListener("DOMContentLoaded", () => {
       $("intensidadeEfeitos").value
     );
 
-    aplicarConfiguracoes();
-
     if (salvar()) {
+      aplicarConfiguracoes();
       tocarSom();
-      mostrarToast("💜 Configurações salvas!");
+      mostrarToast("Configurações salvas!", true);
+    } else {
+      dados = anteriores;
+      aplicarConfiguracoes();
     }
   });
 
   // CONEXÃO DEMONSTRATIVA
+
+  function sincronizarConexao() {
+    try {
+      window.BibouEstado?.atualizar?.({
+        conexao: conexao === "conectado"
+          ? "conectado"
+          : "desconectado"
+      });
+    } catch (erro) {
+      console.warn("Erro ao sincronizar conexão:", erro);
+    }
+  }
+
   function definirConexao(status, descricao) {
     conexao = status;
 
@@ -221,7 +280,8 @@ document.addEventListener("DOMContentLoaded", () => {
       elemento.classList.add("connected");
     } else if (
       status === "buscando" ||
-      status === "conectando"
+      status === "conectando" ||
+      status === "encontrado"
     ) {
       elemento.classList.add("searching");
     } else {
@@ -232,12 +292,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     buscar.disabled = status !== "desconectado";
     conectar.disabled = status !== "encontrado";
-    desconectar.disabled =
-      status === "desconectado";
+    desconectar.disabled = status === "desconectado";
 
     if (status === "conectado") {
       resultadoBusca.hidden = true;
     }
+
+    sincronizarConexao();
   }
 
   buscar.addEventListener("click", () => {
@@ -252,6 +313,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     buscar.textContent = "⌛ Buscando...";
 
+    clearTimeout(timerBusca);
+
     timerBusca = setTimeout(() => {
       timerBusca = null;
 
@@ -264,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
       buscar.textContent = "⌕ Buscar dispositivo";
 
       tocarSom();
-      mostrarToast("🤖 BIBOU virtual encontrado!");
+      mostrarToast("BIBOU virtual encontrado!");
     }, 1800);
   });
 
@@ -273,20 +336,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     definirConexao(
       "conectando",
-      "Estabelecendo conexão fictícia..."
+      "Estabelecendo conexão demonstrativa..."
     );
+
+    clearTimeout(timerConexao);
 
     timerConexao = setTimeout(() => {
       timerConexao = null;
 
       definirConexao(
         "conectado",
-        "Pareamento demonstrativo concluído. " +
-        "Nenhum robô físico está conectado."
+        "Pareamento demonstrativo concluído. Nenhum robô físico está conectado."
       );
 
       tocarSom();
-      mostrarToast("💜 Conexão demonstrativa concluída!");
+      mostrarToast("Conexão demonstrativa concluída!");
     }, 1200);
   });
 
@@ -310,62 +374,82 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // TESTE DE NOTIFICAÇÃO
+
   $("testarNotificacao").addEventListener("click", () => {
     tocarSom();
+
     mostrarToast(
-      "✨ Esta é uma notificação de teste do BIBOU OS!",
+      "Esta é uma notificação de teste do BIBOU OS!",
       true
     );
   });
 
-  // RESTAURAR
+  // RESTAURAR CONFIGURAÇÕES
+
   $("restaurarConfiguracoes").addEventListener("click", () => {
-    const confirmar = confirm(
+    const confirmar = window.confirm(
       "Restaurar as configurações iniciais desta tela?"
     );
 
     if (!confirmar) return;
 
-    try {
-      localStorage.removeItem(CHAVE);
-      dados = padrao();
-      aplicarConfiguracoes();
+    const anteriores = { ...dados };
 
-      clearTimeout(timerBusca);
-      clearTimeout(timerConexao);
+    dados = padrao();
 
-      timerBusca = null;
-      timerConexao = null;
-
-      resultadoBusca.hidden = true;
-      buscar.textContent = "⌕ Buscar dispositivo";
-
-      definirConexao(
-        "desconectado",
-        "Nenhuma conexão demonstrativa ativa."
-      );
-
-      mostrarToast(
-        "💜 Configurações restauradas!",
-        true
-      );
-    } catch {
-      mostrarToast(
-        "Não foi possível restaurar os dados.",
-        true
-      );
+    if (!salvar()) {
+      dados = anteriores;
+      return;
     }
+
+    aplicarConfiguracoes();
+
+    clearTimeout(timerBusca);
+    clearTimeout(timerConexao);
+
+    timerBusca = null;
+    timerConexao = null;
+
+    resultadoBusca.hidden = true;
+    buscar.textContent = "⌕ Buscar dispositivo";
+
+    definirConexao(
+      "desconectado",
+      "Nenhuma conexão demonstrativa ativa."
+    );
+
+    mostrarToast("Configurações restauradas!", true);
+  });
+
+  // ATUALIZAÇÕES ENTRE ABAS
+
+  window.addEventListener("storage", evento => {
+    if (evento.key !== CHAVE) return;
+
+    dados = carregar();
+    aplicarConfiguracoes();
+  });
+
+  // LIMPEZA
+
+  window.addEventListener("pagehide", () => {
+    clearTimeout(timerBusca);
+    clearTimeout(timerConexao);
+    clearTimeout(timerToast);
   });
 
   // INICIALIZAÇÃO
+
   aplicarConfiguracoes();
 
+  // O pareamento virtual é temporário.
+  // Não é restaurado automaticamente ao abrir a página.
   definirConexao(
     "desconectado",
     "Nenhuma conexão demonstrativa ativa."
   );
 
   console.log(
-    "BIBOU OS - Configurações demonstrativas prontas!"
+    "BIBOU OS — Configurações Premium carregadas!"
   );
 });

@@ -1,77 +1,119 @@
 
+/* ==========================================
+   BIBOU OS — OLHOS DIGITAIS
+   Prévia SVG para futura integração ESP32
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
+
   const $ = id => document.getElementById(id);
+  const CHAVE = "bibou_os_olhos_v1";
 
-  const robo = $("roboExpressao");
-  const nomeAtual = $("nomeAtual");
-  const emojiAtual = $("emojiAtual");
-  const descricaoAtual = $("descricaoAtual");
-  const historico = $("historicoExpressoes");
+  const svg = $("bibouEyes");
+  const grupo = $("eyesGroup");
+  const esquerdo = $("leftEye");
+  const direito = $("rightEye");
 
-  const piscarAuto = $("piscarAuto");
-  const movimentoSuave = $("movimentoSuave");
-  const velocidade = $("velocidadeAnimacao");
-  const velocidadeTexto = $("velocidadeTexto");
-
-  const demonstrarTodas = $("demonstrarTodas");
-  const pararDemonstracao = $("pararDemonstracao");
+  const nome = $("expressaoNome");
+  const descricao = $("expressaoDescricao");
+  const resumo = $("expressaoResumo");
+  const animacoesInput = $("animacoesExpressao");
 
   const sidebar = $("sidebar");
   const menuToggle = $("menuToggle");
   const overlay = $("overlay");
-  const toast = $("toast");
 
-  let timerDemo = null;
-  let timerToast = null;
-  let expressaoAtual = "feliz";
+  // Cada expressão possui dois caminhos vetoriais.
+  // Coordenadas projetadas para 320 x 240.
 
-  // BIBLIOTECA DE EXPRESSÕES
   const expressoes = {
     feliz: {
       nome: "Feliz",
-      emoji: "🥰",
-      descricao: "BIBOU está muito contente!"
+      descricao: "Olhinhos alegres e acolhedores.",
+      olhos: [
+        "M57 139 Q92 78 127 139 Q117 157 107 137 Q92 112 77 137 Q67 157 57 139 Z",
+        "M193 139 Q228 78 263 139 Q253 157 243 137 Q228 112 213 137 Q203 157 193 139 Z"
+      ]
     },
+
     triste: {
       nome: "Triste",
-      emoji: "🥺",
-      descricao: "BIBOU está um pouquinho desanimado."
+      descricao: "Um olhar delicado e um pouco caído.",
+      olhos: [
+        "M57 112 Q88 130 127 116 Q125 157 96 160 Q65 158 57 112 Z",
+        "M193 116 Q232 130 263 112 Q255 158 224 160 Q195 157 193 116 Z"
+      ]
     },
+
     surpreso: {
       nome: "Surpreso",
-      emoji: "😮",
-      descricao: "Uau! BIBOU ficou impressionado!"
+      descricao: "Olhos grandes e atentos ao inesperado.",
+      olhos: [
+        "M92 69 C66 69 62 100 62 122 C62 155 75 177 92 177 C109 177 122 155 122 122 C122 100 118 69 92 69 Z",
+        "M228 69 C202 69 198 100 198 122 C198 155 211 177 228 177 C245 177 258 155 258 122 C258 100 254 69 228 69 Z"
+      ]
     },
-    bravo: {
-      nome: "Bravo",
-      emoji: "😠",
-      descricao: "BIBOU está fazendo uma carinha brava!"
+
+    calmo: {
+      nome: "Calmo",
+      descricao: "Olhos relaxados e tranquilos.",
+      olhos: [
+        "M56 126 Q92 145 128 126 Q120 151 92 152 Q64 151 56 126 Z",
+        "M192 126 Q228 145 264 126 Q256 151 228 152 Q200 151 192 126 Z"
+      ]
     },
-    sonolento: {
-      nome: "Sonolento",
-      emoji: "😴",
-      descricao: "BIBOU está quase dormindo..."
+
+    carinho: {
+      nome: "Carinho",
+      descricao: "Um olhar doce, suave e acolhedor.",
+      olhos: [
+        "M55 143 Q92 72 129 143 Q121 160 111 143 Q92 115 73 143 Q63 160 55 143 Z",
+        "M191 143 Q228 72 265 143 Q257 160 247 143 Q228 115 209 143 Q199 160 191 143 Z"
+      ]
     },
-    apaixonado: {
-      nome: "Encantado",
-      emoji: "😍",
-      descricao: "Os olhinhos viraram corações!"
+
+    sono: {
+      nome: "Sono",
+      descricao: "Olhos quase fechados, em descanso.",
+      olhos: [
+        "M56 132 Q92 141 128 132 Q124 147 92 149 Q60 147 56 132 Z",
+        "M192 132 Q228 141 264 132 Q260 147 228 149 Q196 147 192 132 Z"
+      ]
     },
+
     curioso: {
       nome: "Curioso",
-      emoji: "🤔",
-      descricao: "BIBOU quer descobrir algo novo!"
+      descricao: "Olhos atentos, procurando novidades.",
+      olhos: [
+        "M100 78 C79 78 72 99 72 122 C72 147 80 161 100 161 C120 161 128 147 128 122 C128 99 121 78 100 78 Z",
+        "M232 91 C214 91 208 108 208 127 C208 146 214 158 232 158 C250 158 256 146 256 127 C256 108 250 91 232 91 Z"
+      ]
     },
-    neutro: {
-      nome: "Neutro",
-      emoji: "😐",
-      descricao: "BIBOU está tranquilo e relaxado."
+
+    animado: {
+      nome: "Animado",
+      descricao: "Olhos vibrantes e cheios de energia.",
+      olhos: [
+        "M92 70 L105 105 L138 119 L108 134 L92 173 L76 134 L46 119 L79 105 Z",
+        "M228 70 L241 105 L274 119 L244 134 L228 173 L212 134 L182 119 L215 105 Z"
+      ]
     }
   };
 
-  const ordem = Object.keys(expressoes);
+  let atual = "feliz";
+  let olhar = "centro";
+  let animacoes = true;
+  let piscando = false;
+  let timerPiscar = null;
+  let timerFimPiscar = null;
 
-  // MENU MOBILE
+  const movimentoReduzido = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  );
+
+  // MENU
+
   function fecharMenu() {
     sidebar.classList.remove("aberto");
     overlay.hidden = true;
@@ -79,10 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   menuToggle.addEventListener("click", () => {
-    const abrir = !sidebar.classList.contains("aberto");
-    sidebar.classList.toggle("aberto", abrir);
-    overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+    const aberto = sidebar.classList.toggle("aberto");
+    overlay.hidden = !aberto;
+    menuToggle.setAttribute("aria-expanded", String(aberto));
   });
 
   overlay.addEventListener("click", fecharMenu);
@@ -91,204 +132,238 @@ document.addEventListener("DOMContentLoaded", () => {
     if (evento.key === "Escape") fecharMenu();
   });
 
-  // NOTIFICAÇÕES
-  function notificar(texto) {
-    clearTimeout(timerToast);
-    toast.textContent = texto;
-    toast.classList.add("visivel");
+  // ARMAZENAMENTO
 
-    timerToast = setTimeout(() => {
-      toast.classList.remove("visivel");
-    }, 3000);
-  }
+  function carregar() {
+    try {
+      const salvo = JSON.parse(localStorage.getItem(CHAVE));
 
-  // HISTÓRICO
-  function registrarExpressao(expressao) {
-    const dados = expressoes[expressao];
-    const vazio = historico.querySelector(".exp-empty");
-    if (vazio) vazio.remove();
+      if (salvo && expressoes[salvo.expressao]) {
+        atual = salvo.expressao;
+      }
 
-    const item = document.createElement("div");
-    item.className = "exp-history-item";
+      if (["centro", "esquerda", "direita"].includes(salvo?.olhar)) {
+        olhar = salvo.olhar;
+      }
 
-    const emoji = document.createElement("span");
-    emoji.textContent = dados.emoji;
+      if (typeof salvo?.animacoes === "boolean") {
+        animacoes = salvo.animacoes;
+      }
+    } catch {
+      // Usa os padrões.
+    }
 
-    const info = document.createElement("div");
+    const configuracoes =
+      window.BibouPreferencias?.obterConfiguracoes?.();
 
-    const nome = document.createElement("strong");
-    nome.textContent = dados.nome;
-
-    const detalhe = document.createElement("small");
-    detalhe.textContent = "Expressão demonstrativa";
-
-    info.append(nome, detalhe);
-
-    const hora = document.createElement("span");
-    hora.className = "exp-time";
-    hora.textContent = new Date().toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-
-    item.append(emoji, info, hora);
-    historico.prepend(item);
-
-    while (historico.children.length > 6) {
-      historico.lastElementChild.remove();
+    if (configuracoes?.animacoes === false || movimentoReduzido.matches) {
+      animacoes = false;
     }
   }
 
-  // SELECIONAR EXPRESSÃO
-  function selecionarExpressao(chave, registrar = true) {
-    const dados = expressoes[chave];
-    if (!dados) return;
+  function salvar() {
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify({
+        expressao: atual,
+        olhar,
+        animacoes
+      }));
+    } catch (erro) {
+      console.warn("Não foi possível salvar os olhos:", erro);
+    }
+  }
 
-    expressaoAtual = chave;
+  // DESENHO
 
-    robo.dataset.emotion = chave;
-    robo.setAttribute(
+  function atualizarTransformacao() {
+    const deslocamento = {
+      esquerda: -13,
+      centro: 0,
+      direita: 13
+    }[olhar];
+
+    // A piscada comprime verticalmente os olhos,
+    // mantendo o centro da animação em Y = 120.
+    const escala = piscando ? 0.08 : 1;
+
+    grupo.setAttribute(
+      "transform",
+      `translate(${deslocamento} 120) scale(1 ${escala}) translate(0 -120)`
+    );
+  }
+
+  function renderizar() {
+    const dados = expressoes[atual];
+
+    esquerdo.setAttribute("d", dados.olhos[0]);
+    direito.setAttribute("d", dados.olhos[1]);
+
+    nome.textContent = dados.nome;
+    descricao.textContent = dados.descricao;
+    resumo.textContent = dados.nome;
+
+    svg.setAttribute(
       "aria-label",
-      `BIBOU com expressão ${dados.nome}`
+      `Olhos do BIBOU: ${dados.nome}`
     );
 
-    nomeAtual.textContent = dados.nome;
-    emojiAtual.textContent = dados.emoji;
-    descricaoAtual.textContent = dados.descricao;
+    animacoesInput.checked = animacoes;
 
-    document.querySelectorAll(".exp-option").forEach(botao => {
-      const ativo = botao.dataset.emotion === chave;
-      botao.classList.toggle("selecionada", ativo);
-      botao.setAttribute("aria-pressed", String(ativo));
+    document.querySelectorAll("[data-expressao]").forEach(botao => {
+      const selecionado = botao.dataset.expressao === atual;
+      botao.classList.toggle("ativo", selecionado);
+      botao.setAttribute("aria-pressed", String(selecionado));
     });
 
-    if (registrar) registrarExpressao(chave);
+    document.querySelectorAll("[data-olhar]").forEach(botao => {
+      const selecionado = botao.dataset.olhar === olhar;
+      botao.classList.toggle("ativo", selecionado);
+      botao.setAttribute("aria-pressed", String(selecionado));
+    });
+
+    atualizarTransformacao();
   }
 
-  // PARAR DEMONSTRAÇÃO AUTOMÁTICA
-  function pararSequencia() {
-    clearInterval(timerDemo);
-    timerDemo = null;
-    demonstrarTodas.disabled = false;
-    pararDemonstracao.disabled = true;
+  // PISCADAS
+
+  function cancelarPiscadas() {
+    clearTimeout(timerPiscar);
+    clearTimeout(timerFimPiscar);
+    timerPiscar = null;
+    timerFimPiscar = null;
+    piscando = false;
+    atualizarTransformacao();
   }
 
-  // BOTÕES DE EMOÇÕES
-  document.querySelectorAll(".exp-option").forEach(botao => {
+  function piscar() {
+    if (piscando || document.hidden) return;
+
+    piscando = true;
+    atualizarTransformacao();
+
+    clearTimeout(timerFimPiscar);
+
+    timerFimPiscar = setTimeout(() => {
+      piscando = false;
+      atualizarTransformacao();
+      timerFimPiscar = null;
+    }, 160);
+  }
+
+  function agendarPiscada() {
+    clearTimeout(timerPiscar);
+    timerPiscar = null;
+
+    if (!animacoes || movimentoReduzido.matches || document.hidden) {
+      return;
+    }
+
+    const intervalo = 2600 + Math.random() * 2400;
+
+    timerPiscar = setTimeout(() => {
+      piscar();
+      agendarPiscada();
+    }, intervalo);
+  }
+
+  // ESCOLHER EXPRESSÃO
+
+  document.querySelectorAll("[data-expressao]").forEach(botao => {
     botao.addEventListener("click", () => {
-      pararSequencia();
-      selecionarExpressao(botao.dataset.emotion);
+      atual = botao.dataset.expressao;
+      renderizar();
+      salvar();
     });
   });
 
-  // PRÓXIMA EXPRESSÃO
-  $("proximaExpressao").addEventListener("click", () => {
-    pararSequencia();
+  // DIREÇÃO DO OLHAR
 
-    const indice = ordem.indexOf(expressaoAtual);
-    const proximo = ordem[(indice + 1) % ordem.length];
-
-    selecionarExpressao(proximo);
+  document.querySelectorAll("[data-olhar]").forEach(botao => {
+    botao.addEventListener("click", () => {
+      olhar = botao.dataset.olhar;
+      renderizar();
+      salvar();
+    });
   });
 
-  // REINICIAR
-  $("reiniciarExpressao").addEventListener("click", () => {
-    pararSequencia();
-    selecionarExpressao("feliz");
-    notificar("💜 BIBOU voltou à expressão feliz!");
+  // PISCAR MANUALMENTE
+
+  $("piscarAgora").addEventListener("click", piscar);
+
+  // ANIMAÇÕES AUTOMÁTICAS
+
+  animacoesInput.addEventListener("change", () => {
+    animacoes = animacoesInput.checked && !movimentoReduzido.matches;
+    renderizar();
+    salvar();
+
+    if (animacoes) {
+      agendarPiscada();
+    } else {
+      cancelarPiscadas();
+    }
   });
 
-  // CONFIGURAÇÕES
-  piscarAuto.addEventListener("change", () => {
-    robo.classList.toggle("sem-piscar", !piscarAuto.checked);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      cancelarPiscadas();
+    } else {
+      agendarPiscada();
+    }
   });
 
-  movimentoSuave.addEventListener("change", () => {
-    robo.classList.toggle("sem-flutuar", !movimentoSuave.checked);
+  // SINCRONIZAÇÃO COM PREFERÊNCIAS GERAIS
+
+  window.addEventListener("bibou:preferencias", () => {
+    const configuracoes =
+      window.BibouPreferencias?.obterConfiguracoes?.();
+
+    if (configuracoes?.animacoes === false) {
+      animacoes = false;
+      cancelarPiscadas();
+      renderizar();
+      salvar();
+    }
   });
 
-  const velocidades = {
-    1: { nome: "Lenta", fator: 0.65 },
-    2: { nome: "Normal", fator: 1 },
-    3: { nome: "Rápida", fator: 1.7 }
+  // INTERFACE FUTURA PARA O ESP32
+  // Retorna dados estruturados, sem enviar comandos.
+
+  window.BibouOlhos = {
+    obterEstado() {
+      return {
+        expressao: atual,
+        olhar,
+        animacoes
+      };
+    },
+
+    selecionar(expressao) {
+      if (!expressoes[expressao]) return false;
+
+      atual = expressao;
+      renderizar();
+      salvar();
+      return true;
+    },
+
+    olharPara(direcao) {
+      if (!["esquerda", "centro", "direita"].includes(direcao)) {
+        return false;
+      }
+
+      olhar = direcao;
+      renderizar();
+      salvar();
+      return true;
+    }
   };
 
-  velocidade.addEventListener("input", () => {
-    const selecionada = velocidades[velocidade.value];
+  // INICIALIZAÇÃO
 
-    velocidadeTexto.textContent = selecionada.nome;
-    robo.style.setProperty("--anim-speed", selecionada.fator);
-  });
+  carregar();
+  renderizar();
+  agendarPiscada();
 
-  // DEMONSTRAR TODAS AS EXPRESSÕES
-  demonstrarTodas.addEventListener("click", () => {
-    pararSequencia();
-
-    let indice = 0;
-
-    demonstrarTodas.disabled = true;
-    pararDemonstracao.disabled = false;
-
-    selecionarExpressao(ordem[indice]);
-    notificar("✨ Apresentando as expressões do BIBOU!");
-
-    timerDemo = setInterval(() => {
-      indice++;
-
-      if (indice >= ordem.length) {
-        pararSequencia();
-        notificar("💜 Demonstração concluída!");
-        return;
-      }
-
-      selecionarExpressao(ordem[indice]);
-    }, 1800);
-  });
-
-  pararDemonstracao.addEventListener("click", () => {
-    pararSequencia();
-    notificar("■ Demonstração interrompida.");
-  });
-
-  // TELAS AINDA NÃO CRIADAS
-  document.querySelectorAll("[data-page]").forEach(botao => {
-    botao.addEventListener("click", () => {
-
-
-      if (botao.dataset.page === "Memória") {
-        window.location.href = "memoria.html";
-        return;
-      }
-
-
-      if (botao.dataset.page === "Sensores") {
-        window.location.href = "sensores.html";
-        return;
-      }
-
-      if (botao.dataset.page === "Energia") {
-        window.location.href = "sensores.html#energia";
-        return;
-      }
-
-
-      if (botao.dataset.page === "Configurações") {
-        window.location.href = "configuracoes.html";
-        return;
-      }
-
-
-      fecharMenu();
-      notificar(
-        `✨ A tela "${botao.dataset.page}" será criada em breve!`
-      );
-    });
-  });
-
-  // PARA ANIMAÇÃO AUTOMÁTICA AO SAIR DA PÁGINA
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) pararSequencia();
-  });
-
-  console.log("BIBOU OS - Expressões demonstrativas iniciadas!");
+  console.log("BIBOU OS — Olhos digitais iniciados!");
 });

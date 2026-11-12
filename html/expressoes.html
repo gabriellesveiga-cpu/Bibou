@@ -3,294 +3,194 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#100b20">
-  <title>BIBOU OS | Expressões</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15121d">
+  <title>Expressões | BIBOU OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/design-system.css">
   <link rel="stylesheet" href="../css/expressoes.css">
+
+  <script src="../js/bibou-preferencias.js" defer></script>
   <script src="../js/expressoes.js" defer></script>
+
 </head>
-<body>
-<div class="app">
-
-  <!-- MENU LATERAL -->
-  <aside class="sidebar" id="sidebar">
-    <a href="index.html" class="logo">
-      <span class="logo-star">✦</span>
-      BIBOU <span>OS</span>
-    </a>
-
-    <div class="menu-label">MENU PRINCIPAL</div>
-
-    <nav class="menu" aria-label="Menu principal">
-      <a class="menu-item" href="dashboard.html">
-        <span>⌂</span> Início
+<body class="expressoes-premium">
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="logo">
+        <span class="brand-symbol">b<span>.</span></span>
+        <span class="brand-name">bibou <small>OS</small></span>
       </a>
-      <a class="menu-item" href="conversar.html">
-        <span>☏</span> Conversar
-      </a>
-      <a class="menu-item" href="controle.html">
-        <span>✥</span> Controle
-      </a>
-      <a class="menu-item ativo" href="expressoes.html"
-         aria-current="page">
-        <span>☺</span> Expressões
-      </a>
-      <button class="menu-item" data-page="Memória">
-        <span>✧</span> Memória
-      </button>
-      <button class="menu-item" data-page="Sensores">
-        <span>◈</span> Sensores
-      </button>
-      <button class="menu-item" data-page="Energia">
-        <span>ϟ</span> Energia
-      </button>
-      <button class="menu-item" data-page="Configurações">
-        <span>⚙</span> Configurações
-      </button>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <div class="mini-robo">🤖</div>
-      <strong>BIBOU OS</strong>
-      <small>Versão demonstrativa 0.5</small>
-    </div>
-  </aside>
-
-  <div class="conteudo">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button id="menuToggle" class="menu-toggle"
-                aria-label="Abrir menu"
-                aria-expanded="false">☰</button>
-        <div>
-          <span class="topbar-label">PERSONALIDADE VISUAL</span>
-          <h1>Expressões <span>✦</span></h1>
-        </div>
-      </div>
-      <div class="status-demo">
-        <span class="status-dot"></span>
-        Modo demonstração
-      </div>
-    </header>
-
-    <main>
-      <section class="exp-hero">
-        <div>
-          <span class="exp-etiqueta">✦ ROSTINHO DIGITAL</span>
-          <h2>Como o BIBOU está se sentindo?</h2>
-          <p>
-            Escolha uma expressão e veja o rostinho
-            do BIBOU ganhar vida!
-          </p>
-        </div>
-        <span class="exp-hero-icon">💜</span>
-      </section>
-
-      <div class="exp-layout">
-
-        <!-- PRÉVIA -->
-        <section class="card exp-preview">
-          <div class="exp-card-heading">
-            <div>
-              <span class="exp-etiqueta">VISUALIZAÇÃO</span>
-              <h2>Rostinho do BIBOU</h2>
-            </div>
-            <span class="tag">DEMO</span>
+      <div class="menu-label">WORKSPACE</div>
+      <nav class="menu" aria-label="Menu principal">
+        <a class="menu-item" href="dashboard.html"><span class="nav-icon">⌂</span> Visão geral</a>
+        <a class="menu-item" href="conversar.html"><span class="nav-icon">◌</span> Conversar</a>
+        <a class="menu-item" href="controle.html"><span class="nav-icon">✣</span> Controle</a>
+        <a class="menu-item ativo" href="expressoes.html" aria-current="page"><span class="nav-icon">◡</span> Expressões</a>
+        <div class="menu-label menu-label-second">SISTEMA</div>
+        <a class="menu-item" href="memoria.html"><span class="nav-icon">◇</span> Memória</a>
+        <a class="menu-item" href="sensores.html"><span class="nav-icon">⌁</span> Sensores</a>
+        <a class="menu-item" href="sensores.html#energia"><span class="nav-icon">ϟ</span> Energia</a>
+        <a class="menu-item" href="configuracoes.html"><span class="nav-icon">⚙</span> Configurações</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-device">
+          <span class="sidebar-device-dot"></span>
+          <div>
+            <strong data-bibou-nome>BIBOU</strong>
+            <small>Ambiente de demonstração</small>
           </div>
+        </div>
+        <p>Interface BIBOU OS · v1.0</p>
+      </div>
+    </aside>
 
-          <div class="exp-stage">
-            <div class="exp-orbit"></div>
-            <span class="exp-star star-one">✦</span>
-            <span class="exp-star star-two">✧</span>
+    <div class="overlay" id="overlay" hidden></div>
 
-            <div class="exp-robot" id="roboExpressao"
-                 data-emotion="feliz"
-                 role="img"
-                 aria-label="BIBOU com expressão feliz">
-              <div class="exp-antenna"></div>
-              <div class="exp-head">
-                <div class="exp-screen">
-                  <div class="exp-eyes">
-                    <span class="exp-eye"></span>
-                    <span class="exp-eye"></span>
-                  </div>
-                  <div class="exp-mouth"></div>
-                  <span class="exp-extra"></span>
-                </div>
+    <div class="conteudo">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menuToggle" class="menu-toggle" type="button"
+                  aria-label="Abrir menu" aria-expanded="false">☰</button>
+          <div class="breadcrumb">
+            <span>BIBOU OS</span>
+            <span class="breadcrumb-divider">/</span>
+            <strong>Expressões</strong>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-demo"><span></span> Modo demonstração</span>
+          <a href="configuracoes.html" class="profile-button" aria-label="Configurações">⚙</a>
+        </div>
+      </header>
+
+      <main class="expressions-main">
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">IDENTIDADE VISUAL</span>
+            <h1>Expressões</h1>
+            <p>Olhos digitais que dão personalidade ao BIBOU.</p>
+          </div>
+          <span class="expression-panel-tag">Simulação local</span>
+        </div>
+
+        <div class="expressions-layout">
+          <section class="expression-panel preview-panel">
+            <div class="expression-heading">
+              <div>
+                <h2>Display facial</h2>
+                <p>Prévia dos olhos para a futura tela do robô</p>
+              </div>
+              <span class="expression-panel-tag">TFT 2,4″</span>
+            </div>
+
+            <div class="preview-stage">
+              <div class="display-frame">
+                <svg id="bibouEyes" viewBox="0 0 320 240"
+                     role="img" aria-label="Olhos felizes do BIBOU">
+                  <rect width="320" height="240" fill="#100d19"/>
+                  <g id="eyesGroup">
+                    <path id="leftEye" fill="#d9c6f1"/>
+                    <path id="rightEye" fill="#d9c6f1"/>
+                  </g>
+                </svg>
+              </div>
+              <span class="preview-caption">DISPLAY VIRTUAL · 320 × 240</span>
+            </div>
+
+            <div class="expression-current" aria-live="polite">
+              <span class="expression-current-label">EXPRESSÃO SELECIONADA</span>
+              <h3 id="expressaoNome">Feliz</h3>
+              <p id="expressaoDescricao">Olhinhos alegres e acolhedores.</p>
+            </div>
+
+            <div class="expression-toolbar">
+              <label class="expression-switch-row">
+                <span>
+                  <strong>Animações automáticas</strong>
+                  <small>Piscar e movimentar os olhos</small>
+                </span>
+                <input id="animacoesExpressao" type="checkbox" checked>
+                <span class="expression-switch" aria-hidden="true"></span>
+              </label>
+              <button id="piscarAgora" class="secondary-expression-button" type="button">
+                Piscar
+              </button>
+            </div>
+
+            <div class="gaze-controls">
+              <span class="expression-current-label">DIREÇÃO DO OLHAR</span>
+              <div class="gaze-buttons">
+                <button type="button" data-olhar="esquerda">← Esquerda</button>
+                <button type="button" data-olhar="centro" class="ativo">Centro</button>
+                <button type="button" data-olhar="direita">Direita →</button>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div class="exp-current" aria-live="polite">
-            <span id="emojiAtual">🥰</span>
-            <div>
-              <small>Expressão selecionada</small>
-              <strong id="nomeAtual">Feliz</strong>
-              <p id="descricaoAtual">
-                BIBOU está muito contente!
+          <div class="expression-right">
+            <section class="expression-panel picker-panel">
+              <div class="expression-heading">
+                <div>
+                  <h2>Biblioteca de expressões</h2>
+                  <p>Escolha a emoção que deseja visualizar.</p>
+                </div>
+              </div>
+              <div class="expression-grid" id="expressionGrid">
+                <button class="expression-option ativo" type="button" data-expressao="feliz" aria-pressed="true"><span>⌒ ⌒</span><strong>Feliz</strong></button>
+                <button class="expression-option" type="button" data-expressao="triste" aria-pressed="false"><span>⌢ ⌢</span><strong>Triste</strong></button>
+                <button class="expression-option" type="button" data-expressao="surpreso" aria-pressed="false"><span>◯ ◯</span><strong>Surpreso</strong></button>
+                <button class="expression-option" type="button" data-expressao="calmo" aria-pressed="false"><span>━ ━</span><strong>Calmo</strong></button>
+                <button class="expression-option" type="button" data-expressao="carinho" aria-pressed="false"><span>⌒ ⌒</span><strong>Carinho</strong></button>
+                <button class="expression-option" type="button" data-expressao="sono" aria-pressed="false"><span>﹏ ﹏</span><strong>Sono</strong></button>
+                <button class="expression-option" type="button" data-expressao="curioso" aria-pressed="false"><span>◖ ◗</span><strong>Curioso</strong></button>
+                <button class="expression-option" type="button" data-expressao="animado" aria-pressed="false"><span>✧ ✧</span><strong>Animado</strong></button>
+              </div>
+            </section>
+
+            <section class="expression-panel info-panel">
+              <div class="expression-heading">
+                <div>
+                  <h2>Preparado para o futuro</h2>
+                  <p>Do aplicativo para o robô físico</p>
+                </div>
+              </div>
+              <div class="expression-info-line">
+                <span>Companheiro</span>
+                <strong data-bibou-nome>BIBOU</strong>
+              </div>
+              <div class="expression-info-line">
+                <span>Personalidade</span>
+                <strong data-bibou-personalidade>Carinhoso</strong>
+              </div>
+              <div class="expression-info-line">
+                <span>Expressão</span>
+                <strong id="expressaoResumo">Feliz</strong>
+              </div>
+              <div class="expression-info-line">
+                <span>Renderização</span>
+                <strong>Olhos vetoriais</strong>
+              </div>
+              <p class="expression-info-note">
+                As expressões são representadas por parâmetros que poderão
+                ser convertidos em comandos para o ESP32. Nenhuma conexão
+                física é realizada nesta versão.
               </p>
-            </div>
+            </section>
           </div>
+        </div>
+      </main>
 
-          <div class="exp-preview-actions">
-            <button id="proximaExpressao" class="exp-primary">
-              Próxima expressão →
-            </button>
-            <button id="reiniciarExpressao" class="exp-secondary">
-              ↺ Reiniciar
-            </button>
-          </div>
-        </section>
-
-        <!-- BIBLIOTECA -->
-        <section class="card exp-library">
-          <div class="exp-card-heading">
-            <div>
-              <span class="exp-etiqueta">BIBLIOTECA</span>
-              <h2>Escolha uma emoção</h2>
-            </div>
-            <span class="exp-count">8 expressões</span>
-          </div>
-
-          <p class="exp-description">
-            Toque em uma emoção para visualizar
-            a animação no rosto do BIBOU.
-          </p>
-
-          <div class="exp-options">
-            <button class="exp-option selecionada"
-                    data-emotion="feliz"
-                    aria-pressed="true">
-              <span>🥰</span>
-              <strong>Feliz</strong>
-              <small>Animado</small>
-            </button>
-
-            <button class="exp-option" data-emotion="triste">
-              <span>🥺</span>
-              <strong>Triste</strong>
-              <small>Desanimado</small>
-            </button>
-
-            <button class="exp-option" data-emotion="surpreso">
-              <span>😮</span>
-              <strong>Surpreso</strong>
-              <small>Impressionado</small>
-            </button>
-
-            <button class="exp-option" data-emotion="bravo">
-              <span>😠</span>
-              <strong>Bravo</strong>
-              <small>Contrariado</small>
-            </button>
-
-            <button class="exp-option" data-emotion="sonolento">
-              <span>😴</span>
-              <strong>Sonolento</strong>
-              <small>Com sono</small>
-            </button>
-
-            <button class="exp-option" data-emotion="apaixonado">
-              <span>😍</span>
-              <strong>Encantado</strong>
-              <small>Olhos de coração</small>
-            </button>
-
-            <button class="exp-option" data-emotion="curioso">
-              <span>🤔</span>
-              <strong>Curioso</strong>
-              <small>Investigando</small>
-            </button>
-
-            <button class="exp-option" data-emotion="neutro">
-              <span>😐</span>
-              <strong>Neutro</strong>
-              <small>Tranquilo</small>
-            </button>
-          </div>
-        </section>
-
-        <!-- CONFIGURAÇÕES -->
-        <section class="card exp-settings">
-          <div class="exp-card-heading">
-            <div>
-              <span class="exp-etiqueta">PERSONALIZAÇÃO</span>
-              <h2>Configurações de animação</h2>
-            </div>
-            <span>⚙️</span>
-          </div>
-
-          <label class="exp-toggle-row">
-            <span>
-              <strong>Piscar automaticamente</strong>
-              <small>Ativar animação dos olhos</small>
-            </span>
-            <input type="checkbox" id="piscarAuto" checked>
-          </label>
-
-          <label class="exp-toggle-row">
-            <span>
-              <strong>Movimento suave</strong>
-              <small>Fazer a cabeça flutuar</small>
-            </span>
-            <input type="checkbox" id="movimentoSuave" checked>
-          </label>
-
-          <div class="exp-speed">
-            <div class="exp-speed-heading">
-              <label for="velocidadeAnimacao">
-                Velocidade das animações
-              </label>
-              <strong id="velocidadeTexto">Normal</strong>
-            </div>
-            <input type="range" id="velocidadeAnimacao"
-                   min="1" max="3" value="2" step="1">
-            <div class="exp-speed-labels">
-              <span>Lenta</span>
-              <span>Normal</span>
-              <span>Rápida</span>
-            </div>
-          </div>
-
-          <button id="demonstrarTodas" class="exp-primary exp-full">
-            ✨ Demonstrar todas as expressões
-          </button>
-          <button id="pararDemonstracao"
-                  class="exp-secondary exp-full" disabled>
-            ■ Parar demonstração
-          </button>
-        </section>
-
-        <!-- HISTÓRICO -->
-        <section class="card exp-history">
-          <div class="exp-card-heading">
-            <div>
-              <span class="exp-etiqueta">ATIVIDADE</span>
-              <h2>Histórico de expressões</h2>
-            </div>
-            <span>◷</span>
-          </div>
-
-          <div id="historicoExpressoes" class="exp-history-list">
-            <p class="exp-empty">
-              ✨ Suas escolhas aparecerão aqui!
-            </p>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <footer class="rodape">
-      <span>BIBOU OS • Desenvolvido com 💜</span>
-      <span>Expressões demonstrativas • Versão 0.5</span>
-    </footer>
+      <footer class="rodape">
+        <span>BIBOU OS © 2026</span>
+        <span>Pequenos olhos, grandes emoções.</span>
+      </footer>
+    </div>
   </div>
-</div>
-
-<div class="overlay" id="overlay" hidden></div>
-<div id="toast" class="toast" role="status"
-     aria-live="polite"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

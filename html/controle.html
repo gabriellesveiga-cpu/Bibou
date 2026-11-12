@@ -3,313 +3,290 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#100b20">
-  <title>BIBOU OS | Controle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15121d">
+  <title>Controle | BIBOU OS</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/design-system.css">
   <link rel="stylesheet" href="../css/controle.css">
+
+  <script src="../js/bibou-preferencias.js" defer></script>
   <script src="../js/controle.js" defer></script>
+
 </head>
-<body>
-<div class="app">
 
-  <!-- MENU LATERAL -->
-  <aside class="sidebar" id="sidebar">
-    <a href="index.html" class="logo">
-      <span class="logo-star">✦</span>
-      BIBOU <span>OS</span>
-    </a>
-
-    <div class="menu-label">MENU PRINCIPAL</div>
-
-    <nav class="menu" aria-label="Menu principal">
-      <a class="menu-item" href="dashboard.html">
-        <span>⌂</span> Início
+<body class="controle-premium">
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="logo">
+        <span class="brand-symbol">b<span>.</span></span>
+        <span class="brand-name">bibou <small>OS</small></span>
       </a>
-      <a class="menu-item" href="conversar.html">
-        <span>☏</span> Conversar
-      </a>
-      <a class="menu-item ativo" href="controle.html"
-         aria-current="page">
-        <span>✥</span> Controle
-      </a>
-      <button class="menu-item" data-page="Expressões">
-        <span>☺</span> Expressões
-      </button>
-      <button class="menu-item" data-page="Memória">
-        <span>✧</span> Memória
-      </button>
-      <button class="menu-item" data-page="Sensores">
-        <span>◈</span> Sensores
-      </button>
-      <button class="menu-item" data-page="Energia">
-        <span>ϟ</span> Energia
-      </button>
-      <button class="menu-item" data-page="Configurações">
-        <span>⚙</span> Configurações
-      </button>
-    </nav>
 
-    <div class="sidebar-bottom">
-      <div class="mini-robo">🤖</div>
-      <strong>BIBOU OS</strong>
-      <small>Versão demonstrativa 0.4</small>
-    </div>
-  </aside>
+      <div class="menu-label">WORKSPACE</div>
 
-  <!-- CONTEÚDO -->
-  <div class="conteudo controle-conteudo">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button id="menuToggle" class="menu-toggle"
-                aria-label="Abrir menu"
-                aria-expanded="false">☰</button>
-        <div>
-          <span class="topbar-label">CENTRAL DE MOVIMENTOS</span>
-          <h1>Controle <span>✦</span></h1>
-        </div>
-      </div>
-      <div class="status-demo">
-        <span class="status-dot"></span>
-        Modo demonstração
-      </div>
-    </header>
+      <nav class="menu" aria-label="Menu principal">
+        <a class="menu-item" href="dashboard.html">
+          <span class="nav-icon">⌂</span> Visão geral
+        </a>
+        <a class="menu-item" href="conversar.html">
+          <span class="nav-icon">◌</span> Conversar
+        </a>
+        <a class="menu-item ativo" href="controle.html" aria-current="page">
+          <span class="nav-icon">✣</span> Controle
+        </a>
+        <a class="menu-item" href="expressoes.html">
+          <span class="nav-icon">◡</span> Expressões
+        </a>
 
-    <main>
-      <!-- PAINEL SUPERIOR -->
-      <section class="controle-hero">
-        <div>
-          <span class="etiqueta">✦ CONTROLE INTERATIVO</span>
-          <h2>Vamos nos movimentar?</h2>
-          <p>
-            Explore os movimentos do BIBOU usando
-            controles virtuais. Tudo acontece
-            somente nesta demonstração!
-          </p>
-        </div>
-        <div class="hero-icone">🎮</div>
-      </section>
+        <div class="menu-label menu-label-second">SISTEMA</div>
 
-      <div class="controle-grid">
+        <a class="menu-item" href="memoria.html">
+          <span class="nav-icon">◇</span> Memória
+        </a>
+        <a class="menu-item" href="sensores.html">
+          <span class="nav-icon">⌁</span> Sensores
+        </a>
+        <a class="menu-item" href="sensores.html#energia">
+          <span class="nav-icon">ϟ</span> Energia
+        </a>
+        <a class="menu-item" href="configuracoes.html">
+          <span class="nav-icon">⚙</span> Configurações
+        </a>
+      </nav>
 
-        <!-- JOYSTICK -->
-        <section class="card painel joystick-painel">
-          <div class="painel-titulo">
-            <div>
-              <span class="painel-etiqueta">MOVIMENTAÇÃO</span>
-              <h2>Joystick virtual</h2>
-            </div>
-            <span class="painel-emoji">✥</span>
+      <div class="sidebar-bottom">
+        <div class="sidebar-device">
+          <span class="sidebar-device-dot"></span>
+          <div>
+            <strong data-bibou-nome>BIBOU</strong>
+            <small>Ambiente de demonstração</small>
           </div>
+        </div>
+        <p>Interface BIBOU OS · v1.0</p>
+      </div>
+    </aside>
 
-          <p class="painel-descricao">
-            Arraste o joystick ou use os botões.
-            No computador, utilize W, A, S, D
-            ou as setas do teclado.
-          </p>
+    <div class="overlay" id="overlay" hidden></div>
 
-          <div class="joystick-area">
-            <div id="joystick" class="joystick"
-                 role="group"
-                 aria-label="Joystick demonstrativo">
-              <span class="direcao direcao-cima">▲</span>
-              <span class="direcao direcao-baixo">▼</span>
-              <span class="direcao direcao-esq">◀</span>
-              <span class="direcao direcao-dir">▶</span>
-              <div id="joystickKnob" class="joystick-knob">
-                <span>✦</span>
+    <div class="conteudo">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle"
+                  type="button" aria-label="Abrir menu"
+                  aria-expanded="false">☰</button>
+          <div class="breadcrumb">
+            <span>BIBOU OS</span>
+            <span class="breadcrumb-divider">/</span>
+            <strong>Controle</strong>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <span class="topbar-demo"><span></span> Modo demonstração</span>
+          <a class="profile-button" href="configuracoes.html"
+             aria-label="Configurações">⚙</a>
+        </div>
+      </header>
+
+      <main class="controle-main">
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">MOVIMENTO E INTERAÇÃO</span>
+            <h1>Controle</h1>
+            <p>Experimente os movimentos e gestos do BIBOU.</p>
+          </div>
+          <span class="control-demo-label">Controle virtual</span>
+        </div>
+
+        <div class="control-layout">
+          <div class="control-primary">
+
+            <section class="control-panel movement-panel">
+              <div class="control-section-heading">
+                <div>
+                  <h2>Movimentação</h2>
+                  <p>Arraste o joystick ou utilize as teclas direcionais.</p>
+                </div>
+                <span class="panel-tag">MANUAL</span>
               </div>
-            </div>
-          </div>
 
-          <div class="direcionais">
-            <button class="direcional" data-move="frente"
-                    aria-label="Mover para frente">↑</button>
-            <button class="direcional" data-move="esquerda"
-                    aria-label="Virar à esquerda">←</button>
-            <button class="direcional parar-mini"
-                    id="pararMini" aria-label="Parar">■</button>
-            <button class="direcional" data-move="direita"
-                    aria-label="Virar à direita">→</button>
-            <button class="direcional" data-move="tras"
-                    aria-label="Mover para trás">↓</button>
-          </div>
-
-          <div class="velocidade">
-            <div class="velocidade-label">
-              <label for="velocidade">Velocidade simulada</label>
-              <strong id="velocidadeValor">50%</strong>
-            </div>
-            <input type="range" id="velocidade"
-                   min="0" max="100" value="50">
-            <div class="velocidade-extremos">
-              <span>Devagar</span>
-              <span>Rápido</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- PRÉVIA DO ROBÔ -->
-        <section class="card painel previa-painel">
-          <div class="painel-titulo">
-            <div>
-              <span class="painel-etiqueta">PRÉVIA VISUAL</span>
-              <h2>Meu BIBOU</h2>
-            </div>
-            <span class="tag">SIMULAÇÃO</span>
-          </div>
-
-          <div class="palco-robo">
-            <div class="palco-circulo"></div>
-            <div id="roboAnimado" class="robo-controle">
-              <div class="rc-antena"></div>
-              <div class="rc-cabeca">
-                <div class="rc-visor">
-                  <div class="rc-olhos">
-                    <span></span><span></span>
+              <div class="movement-area">
+                <div class="joystick-section">
+                  <div class="joystick" id="joystick"
+                       role="group" aria-label="Joystick virtual">
+                    <span class="joystick-ring"></span>
+                    <span class="joystick-axis vertical"></span>
+                    <span class="joystick-axis horizontal"></span>
+                    <span class="joystick-label up">↑</span>
+                    <span class="joystick-label down">↓</span>
+                    <span class="joystick-label left">←</span>
+                    <span class="joystick-label right">→</span>
+                    <div class="joystick-handle" id="joystickHandle"></div>
                   </div>
-                  <div class="rc-boca"></div>
+                  <span class="joystick-caption">JOYSTICK VIRTUAL</span>
+                </div>
+
+                <div class="direction-section">
+                  <span class="control-subtitle">CONTROLE DIRECIONAL</span>
+                  <div class="direction-grid">
+                    <button class="direction-button up" type="button"
+                            data-direcao="frente" aria-label="Frente">↑</button>
+                    <button class="direction-button left" type="button"
+                            data-direcao="esquerda" aria-label="Esquerda">←</button>
+                    <button class="direction-button stop" type="button"
+                            id="pararMovimento" aria-label="Parar">■</button>
+                    <button class="direction-button right" type="button"
+                            data-direcao="direita" aria-label="Direita">→</button>
+                    <button class="direction-button down" type="button"
+                            data-direcao="tras" aria-label="Trás">↓</button>
+                  </div>
+                  <p class="direction-help">
+                    Use W, A, S, D ou as setas do teclado.
+                    Solte para parar.
+                  </p>
                 </div>
               </div>
-              <div class="rc-braco rc-braco-esq"></div>
-              <div class="rc-braco rc-braco-dir"></div>
-              <div class="rc-corpo">
-                <span>♥</span>
+
+              <div class="speed-section">
+                <div class="speed-heading">
+                  <label for="velocidade">Velocidade simulada</label>
+                  <strong id="velocidadeValor">50%</strong>
+                </div>
+                <input type="range" id="velocidade"
+                       min="10" max="100" step="5" value="50">
+                <div class="speed-labels">
+                  <span>Suave</span>
+                  <span>Rápida</span>
+                </div>
               </div>
-              <div class="rc-rodas">
-                <span></span><span></span>
+            </section>
+
+            <section class="control-panel actions-panel">
+              <div class="control-section-heading">
+                <div>
+                  <h2>Gestos e ações</h2>
+                  <p>Experimente os movimentos especiais do BIBOU.</p>
+                </div>
               </div>
-            </div>
-            <span class="palco-estrela estrela-a">✦</span>
-            <span class="palco-estrela estrela-b">✧</span>
+
+              <div class="action-grid">
+                <button type="button" class="action-button"
+                        data-acao="acenar">
+                  <span class="action-symbol">↗</span>
+                  <strong>Acenar</strong>
+                  <small>Movimentar o braço</small>
+                </button>
+                <button type="button" class="action-button"
+                        data-acao="dancar">
+                  <span class="action-symbol">♫</span>
+                  <strong>Dançar</strong>
+                  <small>Sequência de movimentos</small>
+                </button>
+                <button type="button" class="action-button"
+                        data-acao="feliz">
+                  <span class="action-symbol">◡</span>
+                  <strong>Feliz</strong>
+                  <small>Expressão animada</small>
+                </button>
+                <button type="button" class="action-button"
+                        data-acao="descansar">
+                  <span class="action-symbol">☾</span>
+                  <strong>Descansar</strong>
+                  <small>Modo de repouso</small>
+                </button>
+              </div>
+            </section>
           </div>
 
-          <div class="estado-box" role="status"
-               aria-live="polite">
-            <span class="estado-icone">💜</span>
-            <div>
-              <small>Movimento atual</small>
-              <strong id="movimentoAtual">Parado</strong>
-            </div>
-          </div>
+          <aside class="control-aside">
+            <section class="control-panel robot-panel">
+              <div class="robot-panel-top">
+                <span>SEU COMPANHEIRO</span>
+                <span class="robot-panel-dot"></span>
+              </div>
 
-          <button id="pararTudo" class="botao-parar">
-            ■ Parar animações
-          </button>
-        </section>
+              <div class="control-robot-visual">
+                <div class="control-robot">
+                  <div class="control-robot-head">
+                    <div class="control-robot-face">
+                      <span class="control-eye"></span>
+                      <span class="control-eye"></span>
+                      <span class="control-mouth"></span>
+                    </div>
+                  </div>
+                  <div class="control-robot-arms">
+                    <i></i><i></i>
+                  </div>
+                  <div class="control-robot-body">
+                    <span>B</span>
+                  </div>
+                  <div class="control-robot-base"></div>
+                </div>
+              </div>
 
-        <!-- CABEÇA -->
-        <section class="card painel">
-          <div class="painel-titulo">
-            <div>
-              <span class="painel-etiqueta">ARTICULAÇÕES</span>
-              <h2>Movimentos da cabeça</h2>
-            </div>
-            <span class="painel-emoji">🤖</span>
-          </div>
-          <p class="painel-descricao">
-            Escolha para onde o BIBOU deve olhar.
-          </p>
-          <div class="botoes-grid">
-            <button class="botao-acao"
-                    data-head="cima">↑ Olhar para cima</button>
-            <button class="botao-acao"
-                    data-head="baixo">↓ Olhar para baixo</button>
-            <button class="botao-acao"
-                    data-head="esquerda">← Olhar à esquerda</button>
-            <button class="botao-acao"
-                    data-head="direita">→ Olhar à direita</button>
-            <button class="botao-acao botao-largo"
-                    data-head="centro">✦ Centralizar cabeça</button>
-          </div>
-        </section>
+              <h2 data-bibou-nome>BIBOU</h2>
+              <p>Pronto para experimentar novos movimentos.</p>
 
-        <!-- BRAÇOS -->
-        <section class="card painel">
-          <div class="painel-titulo">
-            <div>
-              <span class="painel-etiqueta">ARTICULAÇÕES</span>
-              <h2>Movimentos dos braços</h2>
-            </div>
-            <span class="painel-emoji">🙌</span>
-          </div>
-          <p class="painel-descricao">
-            Simule gestos com os bracinhos do BIBOU.
-          </p>
-          <div class="botoes-grid">
-            <button class="botao-acao"
-                    data-arm="levantar">🙌 Levantar</button>
-            <button class="botao-acao"
-                    data-arm="abaixar">↓ Abaixar</button>
-            <button class="botao-acao"
-                    data-arm="esquerdo">💜 Braço esquerdo</button>
-            <button class="botao-acao"
-                    data-arm="direito">💜 Braço direito</button>
-            <button class="botao-acao botao-largo"
-                    data-arm="acenar">👋 Acenar</button>
-          </div>
-        </section>
+              <div class="robot-panel-divider"></div>
 
-        <!-- GESTOS -->
-        <section class="card painel gestos-painel">
-          <div class="painel-titulo">
-            <div>
-              <span class="painel-etiqueta">AÇÕES ESPECIAIS</span>
-              <h2>Gestos e brincadeiras</h2>
-            </div>
-            <span class="painel-emoji">✨</span>
-          </div>
-          <div class="gestos-grid">
-            <button class="gesto" data-gesture="dancar">
-              <span>🎵</span>
-              <strong>Dançar</strong>
-              <small>Uma dancinha virtual</small>
-            </button>
-            <button class="gesto" data-gesture="oi">
-              <span>👋</span>
-              <strong>Dizer oi</strong>
-              <small>Um cumprimento fofo</small>
-            </button>
-            <button class="gesto" data-gesture="feliz">
-              <span>🥳</span>
-              <strong>Comemorar</strong>
-              <small>Ficar superfeliz</small>
-            </button>
-            <button class="gesto" data-gesture="descansar">
-              <span>💤</span>
-              <strong>Descansar</strong>
-              <small>Voltar ao repouso</small>
-            </button>
-          </div>
-        </section>
+              <div class="robot-stat">
+                <span>Movimento atual</span>
+                <strong id="movimentoAtual">Em repouso</strong>
+              </div>
+              <div class="robot-stat">
+                <span>Velocidade dos motores</span>
+                <strong data-estado-motores>Em repouso</strong>
+              </div>
+              <div class="robot-stat">
+                <span>Conexão virtual</span>
+                <strong data-estado-conexao>Desconectado</strong>
+              </div>
+            </section>
 
-        <!-- HISTÓRICO -->
-        <section class="card painel historico-painel">
-          <div class="painel-titulo">
-            <div>
-              <span class="painel-etiqueta">ATIVIDADE</span>
-              <h2>Últimos comandos</h2>
-            </div>
-            <span class="painel-emoji">◷</span>
-          </div>
-          <div id="historicoComandos" class="historico-lista">
-            <div class="historico-vazio">
-              ✨ Seus comandos aparecerão aqui!
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+            <section class="control-panel activity-panel">
+              <div class="control-section-heading">
+                <div>
+                  <h2>Último comando</h2>
+                  <p>Registro da simulação atual</p>
+                </div>
+              </div>
+              <div class="activity-display">
+                <span class="activity-indicator"></span>
+                <div>
+                  <strong id="ultimoComando">Aguardando comando</strong>
+                  <small id="horarioComando">Nenhuma ação realizada</small>
+                </div>
+              </div>
+              <button type="button" id="paradaGeral"
+                      class="emergency-stop">
+                ■ Parar movimentos
+              </button>
+            </section>
 
-    <footer class="rodape">
-      <span>BIBOU OS • Desenvolvido com 💜</span>
-      <span>Controle demonstrativo • Versão 0.4</span>
-    </footer>
+            <div class="control-notice">
+              <span>ⓘ</span>
+              <p>
+                Os comandos são apenas demonstrativos.
+                Nenhum motor ou robô físico será acionado.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      <footer class="rodape">
+        <span>BIBOU OS © 2026</span>
+        <span>Controle demonstrativo de movimentos.</span>
+      </footer>
+    </div>
   </div>
-</div>
 
-<div class="overlay" id="overlay" hidden></div>
-<div id="toast" class="toast" role="status"
-     aria-live="polite"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

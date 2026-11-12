@@ -1,27 +1,28 @@
 
+/* ==========================================
+   BIBOU OS — DASHBOARD PREMIUM
+   Versão visual 2.0
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
 
-  // ELEMENTOS DA INTERFACE
-  const sidebar = document.getElementById("sidebar");
-  const menuToggle = document.getElementById("menuToggle");
-  const overlay = document.getElementById("overlay");
-  const toast = document.getElementById("toast");
-  const robo = document.querySelector(".robo");
+  const $ = id => document.getElementById(id);
 
-  const estadoRobo = document.getElementById("estadoRobo");
-  const descricaoEstado = document.getElementById("descricaoEstado");
-  const humorRobo = document.getElementById("humorRobo");
-  const descricaoHumor = document.getElementById("descricaoHumor");
-  const listaAtividades = document.getElementById("listaAtividades");
+  const sidebar = $("sidebar");
+  const menuToggle = $("menuToggle");
+  const overlay = $("overlay");
 
-  let temporizadorToast;
-  let temporizadorDanca;
+  // MENU RESPONSIVO
 
-  // MENU MOBILE
   function fecharMenu() {
     sidebar.classList.remove("aberto");
     overlay.hidden = true;
-    menuToggle.setAttribute("aria-expanded", "false");
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "false"
+    );
   }
 
   menuToggle.addEventListener("click", () => {
@@ -29,182 +30,155 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sidebar.classList.toggle("aberto", abrir);
     overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      String(abrir)
+    );
   });
 
   overlay.addEventListener("click", fecharMenu);
 
-  document.addEventListener("keydown", (evento) => {
+  document.addEventListener("keydown", evento => {
     if (evento.key === "Escape") {
       fecharMenu();
     }
   });
 
-  // NOTIFICAÇÕES
-  function notificar(mensagem) {
-    clearTimeout(temporizadorToast);
+  document.querySelectorAll(
+    ".sidebar .menu-item"
+  ).forEach(link => {
+    link.addEventListener("click", fecharMenu);
+  });
 
-    toast.textContent = mensagem;
-    toast.classList.add("visivel");
+  // DATA ATUAL
 
-    temporizadorToast = setTimeout(() => {
-      toast.classList.remove("visivel");
-    }, 3500);
+  function atualizarData() {
+    const elemento = $("dataAtual");
+
+    if (!elemento) return;
+
+    const hoje = new Date();
+
+    elemento.textContent =
+      new Intl.DateTimeFormat("pt-BR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }).format(hoje);
   }
 
-  // HISTÓRICO DEMONSTRATIVO
-  function registrarAtividade(titulo, descricao, icone) {
-    const item = document.createElement("div");
-    item.className = "atividade-item";
+  // ESTADO DEMONSTRATIVO
 
-    const simbolo = document.createElement("span");
-    simbolo.className = "atividade-icone";
-    simbolo.textContent = icone;
+  function atualizarEstado() {
+    if (!window.BibouEstado) return;
 
-    const informacoes = document.createElement("div");
+    const estado = window.BibouEstado.obter();
 
-    const nome = document.createElement("strong");
-    nome.textContent = titulo;
+    // Atributos de dados usados no HTML
+    const textosConexao = {
+      desconectado: "Desconectado",
+      buscando: "Buscando...",
+      encontrado: "Dispositivo encontrado",
+      conectando: "Conectando...",
+      conectado: "Conectado (demo)"
+    };
 
-    const detalhe = document.createElement("small");
-    detalhe.textContent = descricao;
+    const textosRecarga = {
+      fora: "Fora da base",
+      procurando: "Procurando base",
+      carregando: "Carregando",
+      completa: "Carga completa"
+    };
 
-    informacoes.append(nome, detalhe);
-
-    const hora = document.createElement("span");
-    hora.className = "hora";
-    hora.textContent = new Date().toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit"
+    document.querySelectorAll(
+      "[data-estado-conexao]"
+    ).forEach(elemento => {
+      elemento.textContent =
+        textosConexao[estado.conexao] ||
+        "Desconectado";
     });
 
-    item.append(simbolo, informacoes, hora);
-    listaAtividades.prepend(item);
+    document.querySelectorAll(
+      "[data-estado-bateria]"
+    ).forEach(elemento => {
+      elemento.textContent =
+        estado.bateria + "%";
+    });
 
-    // Mantém no máximo 5 atividades
-    while (listaAtividades.children.length > 5) {
-      listaAtividades.lastElementChild.remove();
+    document.querySelectorAll(
+      "[data-estado-motores]"
+    ).forEach(elemento => {
+      elemento.textContent =
+        estado.velocidade === 0
+          ? "Em repouso"
+          : `Movimento virtual · ${estado.velocidade}%`;
+    });
+
+    document.querySelectorAll(
+      "[data-estado-recarga]"
+    ).forEach(elemento => {
+      elemento.textContent =
+        textosRecarga[estado.recarga] ||
+        "Fora da base";
+    });
+
+    // Indicador de conexão
+    const indicador = $("indicadorConexao");
+
+    if (indicador) {
+      indicador.classList.toggle(
+        "online",
+        estado.conexao === "conectado"
+      );
+    }
+
+    // Pequena bateria visual
+    const bateria = $("miniBateria");
+
+    if (bateria) {
+      bateria.style.width =
+        estado.bateria + "%";
+
+      bateria.style.background =
+        estado.bateria <= 20
+          ? "#d7a27e"
+          : "#aa8bdc";
     }
   }
 
-  // CUMPRIMENTAR BIBOU
-  function cumprimentar() {
-    clearTimeout(temporizadorDanca);
-    robo.classList.remove("dancando");
+  // PREFERÊNCIAS
 
-    estadoRobo.textContent = "Animado!";
-    descricaoEstado.textContent = "Acabou de receber um oi!";
-    humorRobo.textContent = "Muito feliz";
-    descricaoHumor.textContent = "Adorou o cumprimento!";
+  function atualizarPreferencias() {
+    if (!window.BibouPreferencias) return;
 
-    notificar("💜 BIBOU: Oii! Que bom ver você!");
-    registrarAtividade(
-      "BIBOU recebeu um oi",
-      "Cumprimento demonstrativo",
-      "💜"
-    );
+    window.BibouPreferencias.atualizarElementos();
   }
 
-  // DANÇA SIMULADA
-  function dancar() {
-    clearTimeout(temporizadorDanca);
+  // EVENTOS COMPARTILHADOS
 
-    robo.classList.add("dancando");
+  window.addEventListener(
+    "bibou:estado",
+    atualizarEstado
+  );
 
-    estadoRobo.textContent = "Dançando!";
-    descricaoEstado.textContent = "Dança virtual em andamento";
-    humorRobo.textContent = "Animado";
-    descricaoHumor.textContent = "Curtindo uma música imaginária!";
+  window.addEventListener(
+    "bibou:preferencias",
+    atualizarPreferencias
+  );
 
-    notificar("🎵 BIBOU está fazendo uma dancinha virtual!");
-
-    registrarAtividade(
-      "Dança demonstrativa",
-      "Animação realizada na interface",
-      "🎵"
-    );
-
-    temporizadorDanca = setTimeout(() => {
-      robo.classList.remove("dancando");
-      estadoRobo.textContent = "Descansando";
-      descricaoEstado.textContent = "Pronto para explorar!";
-    }, 3500);
-  }
-
-  // BOTÕES DE AÇÃO
-  document.querySelectorAll("[data-action]").forEach(botao => {
-    botao.addEventListener("click", () => {
-      const acao = botao.dataset.action;
-
-      if (acao === "cumprimentar") {
-        cumprimentar();
-      }
-
-      if (acao === "dancar") {
-        dancar();
-      }
-    });
+  window.addEventListener("pageshow", () => {
+    atualizarEstado();
+    atualizarPreferencias();
   });
 
-  // TELAS QUE AINDA SERÃO DESENVOLVIDAS
+  // INICIALIZAÇÃO
 
-  // NAVEGAÇÃO ENTRE TELAS
-  document.querySelectorAll("[data-page]").forEach(botao => {
-    botao.addEventListener("click", () => {
-      const pagina = botao.dataset.page;
+  atualizarData();
+  atualizarEstado();
+  atualizarPreferencias();
 
-      if (botao.dataset.page === "Expressões") {
-        window.location.href = "expressoes.html";
-        return;
-      }
-
-      if (pagina === "Conversar") {
-        window.location.href = "conversar.html";
-        return;
-      }
-
-      if (pagina === "Controle") {
-        window.location.href = "controle.html";
-        return;
-      }
-
-      fecharMenu();
-
-
-      if (botao.dataset.page === "Memória") {
-        window.location.href = "memoria.html";
-        return;
-      }
-
-      
-      if (botao.dataset.page === "Sensores") {
-        window.location.href = "sensores.html";
-        return;
-      }
-
-      if (botao.dataset.page === "Energia") {
-        window.location.href = "sensores.html#energia";
-        return;
-      }
-
-
-      if (botao.dataset.page === "Configurações") {
-        window.location.href = "configuracoes.html";
-        return;
-      }
-
-
-      notificar(
-        `✨ A tela "${pagina}" será desenvolvida em breve!`
-      );
-
-      registrarAtividade(
-        `Acesso à área ${pagina}`,
-        "Tela ainda em desenvolvimento",
-        "✦"
-      );
-    });
-  });
-
-  console.log("BIBOU OS Dashboard - Modo demonstração ativo");
+  console.log(
+    "BIBOU OS — Dashboard Premium carregado!"
+  );
 });

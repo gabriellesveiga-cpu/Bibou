@@ -1,25 +1,14 @@
 
+/* ==========================================
+   BIBOU OS — SENSORES PREMIUM
+   Simulação de sensores e energia
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
+
   const $ = id => document.getElementById(id);
 
-  // ELEMENTOS
-  const sidebar = $("sidebar");
-  const menuToggle = $("menuToggle");
-  const overlay = $("overlay");
-  const toast = $("toast");
-
-  const bateriaValor = $("bateriaValor");
-  const bateriaStatus = $("bateriaStatus");
-  const anelBateria = $("anelBateria");
-  const ajusteBateria = $("ajusteBateria");
-
-  const ajusteMotores = $("ajusteMotores");
-  const ajusteInclinacao = $("ajusteInclinacao");
-  const bibouRecarga = $("bibouRecarga");
-
-  const historico = $("historicoSensores");
-
-  // ESTADO DA SIMULAÇÃO
   const estado = {
     bateria: 78,
     simulacaoAtiva: true,
@@ -38,51 +27,95 @@ document.addEventListener("DOMContentLoaded", () => {
   let timerCarga = null;
   let timerToast = null;
 
-  // MENU RESPONSIVO
-  function fecharMenu() {
-    sidebar.classList.remove("aberto");
-    overlay.hidden = true;
-    menuToggle.setAttribute("aria-expanded", "false");
+  const sidebar = $("sidebar");
+  const menuToggle = $("menuToggle");
+  const overlay = $("overlay");
+  const toast = $("toast");
+
+  const ajusteBateria = $("ajusteBateria");
+  const ajusteMotores = $("ajusteMotores");
+  const ajusteInclinacao = $("ajusteInclinacao");
+  const bibouRecarga = $("bibouRecarga");
+  const historico = $("historicoSensores");
+
+  const limitar = (valor, minimo, maximo) =>
+    Math.min(maximo, Math.max(minimo, valor));
+
+  // ESTADO COMPARTILHADO
+
+  function sincronizarEstado() {
+    if (typeof window.BibouEstado?.atualizar !== "function") {
+      return;
+    }
+
+    try {
+      window.BibouEstado.atualizar({
+        bateria: Math.round(estado.bateria),
+        velocidade: estado.velocidade,
+        recarga: estado.recarga
+      });
+    } catch (erro) {
+      console.warn("Falha na sincronização de estado:", erro);
+    }
   }
 
-  menuToggle.addEventListener("click", () => {
-    const abrir = !sidebar.classList.contains("aberto");
+  // MENU RESPONSIVO
 
-    sidebar.classList.toggle("aberto", abrir);
-    overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+  function fecharMenu() {
+    sidebar?.classList.remove("aberto");
+
+    if (overlay) overlay.hidden = true;
+
+    menuToggle?.setAttribute("aria-expanded", "false");
+  }
+
+  menuToggle?.addEventListener("click", () => {
+    const aberto = sidebar.classList.toggle("aberto");
+
+    if (overlay) overlay.hidden = !aberto;
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      String(aberto)
+    );
   });
 
-  overlay.addEventListener("click", fecharMenu);
+  overlay?.addEventListener("click", fecharMenu);
 
   document.addEventListener("keydown", evento => {
     if (evento.key === "Escape") fecharMenu();
   });
 
   // NOTIFICAÇÕES
-  function notificar(mensagem) {
-    clearTimeout(timerToast);
 
+  function notificar(mensagem) {
+    if (!toast) return;
+
+    clearTimeout(timerToast);
     toast.textContent = mensagem;
     toast.classList.add("visivel");
 
     timerToast = setTimeout(() => {
       toast.classList.remove("visivel");
-    }, 3000);
+    }, 2800);
   }
 
-  // HISTÓRICO
+  // HISTÓRICO DE EVENTOS
+
   function registrar(titulo, icone = "✦") {
-    const vazio = historico.querySelector(".sen-empty");
-    if (vazio) vazio.remove();
+    historico.querySelector(
+      ".sensors-history-empty"
+    )?.remove();
 
     const item = document.createElement("div");
-    item.className = "sen-history-item";
+    item.className = "sensors-history-item";
 
     const simbolo = document.createElement("span");
+    simbolo.className = "sensors-history-icon";
     simbolo.textContent = icone;
 
     const info = document.createElement("div");
+    info.className = "sensors-history-info";
 
     const nome = document.createElement("strong");
     nome.textContent = titulo;
@@ -93,11 +126,11 @@ document.addEventListener("DOMContentLoaded", () => {
     info.append(nome, descricao);
 
     const hora = document.createElement("span");
-    hora.className = "sen-history-time";
-    hora.textContent = new Date().toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+    hora.className = "sensors-history-time";
+    hora.textContent = new Date().toLocaleTimeString(
+      "pt-BR",
+      { hour: "2-digit", minute: "2-digit" }
+    );
 
     item.append(simbolo, info, hora);
     historico.prepend(item);
@@ -111,44 +144,51 @@ document.addEventListener("DOMContentLoaded", () => {
     historico.replaceChildren();
 
     const vazio = document.createElement("div");
-    vazio.className = "sen-empty";
-    vazio.textContent = "✨ Os eventos aparecerão aqui!";
+    vazio.className = "sensors-history-empty";
+    vazio.textContent =
+      "Nenhum evento registrado nesta sessão.";
 
     historico.appendChild(vazio);
     notificar("Histórico demonstrativo limpo.");
   });
 
   // BATERIA
+
   function atualizarBateria() {
     const nivel = Math.round(estado.bateria);
-
-    bateriaValor.textContent = nivel + "%";
-    ajusteBateria.value = nivel;
-
-    anelBateria.style.setProperty("--battery", nivel + "%");
-
-    let cor = "#b78aff";
-
-    if (nivel <= 20) cor = "#ff9b9b";
-    else if (nivel <= 40) cor = "#ffcc83";
-
-    anelBateria.style.setProperty("--battery-color", cor);
-
     const carregando = estado.recarga === "carregando";
 
+    $("bateriaValor").textContent = `${nivel}%`;
+    ajusteBateria.value = nivel;
+
+    const cor = nivel <= 20
+      ? "#e7a1a1"
+      : nivel <= 40
+        ? "#e7bf83"
+        : "#aa8bdc";
+
+    const anel = $("anelBateria");
+    anel.style.setProperty("--battery", `${nivel}%`);
+    anel.style.setProperty("--battery-color", cor);
+
+    const status = $("bateriaStatus");
+
     if (carregando) {
-      bateriaStatus.textContent = "⚡ Carregando";
+      status.textContent = "ϟ Carregando";
+      status.style.color = "#80d8b0";
     } else if (nivel <= 20) {
-      bateriaStatus.textContent = "● Bateria baixa";
+      status.textContent = "● Bateria baixa";
+      status.style.color = "#e7a1a1";
+    } else if (estado.recarga === "completa") {
+      status.textContent = "● Carga completa";
+      status.style.color = "#80d8b0";
     } else {
-      bateriaStatus.textContent = "● Em uso";
+      status.textContent = "● Em uso";
+      status.style.color = "#aa8bdc";
     }
 
-    bateriaStatus.style.color = carregando
-      ? "#78e7b1"
-      : nivel <= 20 ? "#ff9b9b" : "#b78aff";
-
-    // Estimativa fictícia: 5 minutos por ponto percentual
+    // Estimativa apenas ilustrativa:
+    // cinco minutos por ponto percentual.
     const minutos = nivel * 5;
     const horas = Math.floor(minutos / 60);
     const restantes = minutos % 60;
@@ -157,22 +197,30 @@ document.addEventListener("DOMContentLoaded", () => {
       ? "Em recarga"
       : `${horas}h ${String(restantes).padStart(2, "0")}min`;
 
-    // Números exclusivamente ilustrativos
     $("tensaoValor").textContent =
-      (6.5 + nivel * 0.017).toFixed(2).replace(".", ",") + " V";
+      (6.5 + nivel * 0.017)
+        .toFixed(2)
+        .replace(".", ",") + " V";
 
     $("consumoValor").textContent = carregando
       ? "0,0 W"
       : (1.4 + estado.velocidade * 0.025)
-          .toFixed(1).replace(".", ",") + " W";
+          .toFixed(1)
+          .replace(".", ",") + " W";
   }
 
   ajusteBateria.addEventListener("input", () => {
-    estado.bateria = Number(ajusteBateria.value);
-    atualizarBateria();
+    estado.bateria = limitar(
+      Number(ajusteBateria.value), 0, 100
+    );
 
-    if (estado.bateria >= 100 &&
-        estado.recarga === "carregando") {
+    atualizarBateria();
+    sincronizarEstado();
+
+    if (
+      estado.bateria >= 100 &&
+      estado.recarga === "carregando"
+    ) {
       concluirRecarga();
     }
   });
@@ -180,43 +228,56 @@ document.addEventListener("DOMContentLoaded", () => {
   ajusteBateria.addEventListener("change", () => {
     registrar(
       `Bateria ajustada para ${estado.bateria}%`,
-      "🔋"
+      "ϟ"
     );
   });
 
-  // SENSORES DE DISTÂNCIA
+  // DISTÂNCIAS E RADAR
+
+  const direcoes = [
+    ["frente", "distFrente", "barraFrente", "pontoFrente"],
+    ["esquerda", "distEsquerda", "barraEsquerda", "pontoEsquerda"],
+    ["direita", "distDireita", "barraDireita", "pontoDireita"]
+  ];
+
   function atualizarDistancias() {
-    const distancias = estado.distancias;
+    direcoes.forEach(([chave, textoId, barraId, pontoId]) => {
+      const distancia = estado.distancias[chave];
 
-    const direcoes = [
-      ["frente", "distFrente", "barraFrente"],
-      ["esquerda", "distEsquerda", "barraEsquerda"],
-      ["direita", "distDireita", "barraDireita"]
-    ];
+      $(textoId).textContent = `${distancia} cm`;
 
-    direcoes.forEach(([chave, textoId, barraId]) => {
-      const valor = distancias[chave];
+      const barra = $(barraId);
+      barra.style.width =
+        `${limitar(distancia / 200 * 100, 0, 100)}%`;
 
-      $(textoId).textContent = valor + " cm";
-      $(barraId).style.width =
-        Math.min(100, valor / 200 * 100) + "%";
+      const cor = distancia < 30
+        ? "#e7a1a1"
+        : distancia < 60
+          ? "#e7bf83"
+          : "#aa8bdc";
 
-      $(barraId).style.background =
-        valor < 30 ? "#ff9b9b"
-        : valor < 60 ? "#ffcc83"
-        : "linear-gradient(90deg, #a978ff, #ff9fe3)";
+      barra.style.background = cor;
+
+      const ponto = $(pontoId);
+      if (ponto) {
+        ponto.style.background = cor;
+        ponto.style.boxShadow = `0 0 12px ${cor}80`;
+      }
     });
 
-    const menor = Math.min(...Object.values(distancias));
+    const menor = Math.min(
+      ...Object.values(estado.distancias)
+    );
+
     const alerta = $("alertaObstaculo");
 
     if (menor < 30) {
       alerta.textContent =
-        "⚠️ Obstáculo próximo na simulação!";
+        "Atenção: obstáculo próximo na simulação.";
       alerta.classList.add("atencao");
     } else {
       alerta.textContent =
-        "✨ Nenhum obstáculo próximo.";
+        "Nenhum obstáculo próximo.";
       alerta.classList.remove("atencao");
     }
   }
@@ -226,10 +287,10 @@ document.addEventListener("DOMContentLoaded", () => {
       ...Object.values(estado.distancias)
     );
 
-    for (const direcao of Object.keys(estado.distancias)) {
+    Object.keys(estado.distancias).forEach(direcao => {
       estado.distancias[direcao] =
         Math.floor(15 + Math.random() * 186);
-    }
+    });
 
     atualizarDistancias();
 
@@ -238,15 +299,16 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     if (atual < 30 && anterior >= 30) {
-      registrar("Obstáculo virtual detectado", "⚠️");
+      registrar("Obstáculo virtual detectado", "!");
     }
   }
 
   // INCLINAÇÃO
+
   function atualizarInclinacao() {
     const angulo = estado.inclinacao;
 
-    $("inclinacaoLateral").textContent = angulo + "°";
+    $("inclinacaoLateral").textContent = `${angulo}°`;
     $("inclinacaoFrontal").textContent = "0°";
 
     $("roboInclinacao").style.transform =
@@ -254,32 +316,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   ajusteInclinacao.addEventListener("input", () => {
-    estado.inclinacao = Number(ajusteInclinacao.value);
+    estado.inclinacao = limitar(
+      Number(ajusteInclinacao.value), -30, 30
+    );
+
     atualizarInclinacao();
   });
 
   ajusteInclinacao.addEventListener("change", () => {
     registrar(
       `Inclinação virtual: ${estado.inclinacao}°`,
-      "🧭"
+      "◇"
     );
   });
 
   // MOTORES
+
   function atualizarMotores() {
     const velocidade = estado.velocidade;
     const rpm = Math.round(velocidade * 1.8);
 
-    $("motorPercentual").textContent = velocidade + "%";
-    $("rpmEsquerda").textContent = rpm + " RPM";
-    $("rpmDireita").textContent = rpm + " RPM";
+    $("motorPercentual").textContent = `${velocidade}%`;
+    $("rpmEsquerda").textContent = `${rpm} RPM`;
+    $("rpmDireita").textContent = `${rpm} RPM`;
 
-    $("motorEstado").textContent = velocidade === 0
-      ? "Em repouso"
-      : "Movimento simulado";
+    $("motorEstado").textContent =
+      velocidade === 0
+        ? "Em repouso"
+        : "Movimento simulado";
 
-    $("motorIcone").textContent =
-      velocidade === 0 ? "🛞" : "⚙️";
+    const roda = $("motorIcone");
+    roda.classList.toggle("girando", velocidade > 0);
+    roda.style.animationDuration =
+      `${Math.max(.25, 1.8 - velocidade * .014)}s`;
+
+    ajusteMotores.value = velocidade;
 
     atualizarBateria();
   }
@@ -287,22 +358,29 @@ document.addEventListener("DOMContentLoaded", () => {
   ajusteMotores.addEventListener("input", () => {
     if (estado.recarga !== "fora") {
       ajusteMotores.value = 0;
-      notificar("Saia da base antes de simular os motores.");
+      notificar(
+        "Saia da base antes de simular os motores."
+      );
       return;
     }
 
-    estado.velocidade = Number(ajusteMotores.value);
+    estado.velocidade = limitar(
+      Number(ajusteMotores.value), 0, 100
+    );
+
     atualizarMotores();
+    sincronizarEstado();
   });
 
   ajusteMotores.addEventListener("change", () => {
     registrar(
       `Motores ajustados para ${estado.velocidade}%`,
-      "⚙️"
+      "⚙"
     );
   });
 
-  // RECARGA AUTOMÁTICA DEMONSTRATIVA
+  // RECARGA
+
   function atualizarEstadoRecarga(titulo, descricao) {
     $("estadoRecarga").textContent = titulo;
     $("descricaoRecarga").textContent = descricao;
@@ -314,6 +392,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $("sairBase").disabled =
       estado.recarga === "fora";
+
+    ajusteMotores.disabled =
+      estado.recarga !== "fora";
   }
 
   function concluirRecarga() {
@@ -323,18 +404,21 @@ document.addEventListener("DOMContentLoaded", () => {
     estado.bateria = 100;
     estado.recarga = "completa";
 
-    atualizarBateria();
-    atualizarBotoesRecarga();
-
     atualizarEstadoRecarga(
       "Carga completa!",
       "BIBOU está com 100% de bateria virtual."
     );
 
-    registrar("Recarga demonstrativa concluída", "💜");
+    atualizarBateria();
+    atualizarBotoesRecarga();
+    sincronizarEstado();
+
+    registrar("Recarga demonstrativa concluída", "✓");
   }
 
   function iniciarCarregamento() {
+    if (estado.recarga !== "procurando") return;
+
     estado.recarga = "carregando";
 
     atualizarEstadoRecarga(
@@ -342,21 +426,29 @@ document.addEventListener("DOMContentLoaded", () => {
       "BIBOU chegou à base e iniciou a recarga virtual."
     );
 
-    atualizarBotoesRecarga();
     atualizarBateria();
-    registrar("Recarga virtual iniciada", "⚡");
+    atualizarBotoesRecarga();
+    sincronizarEstado();
+
+    registrar("Recarga virtual iniciada", "ϟ");
 
     if (estado.bateria >= 100) {
       concluirRecarga();
       return;
     }
 
-    // Simulação acelerada: 1% a cada 0,7 segundo
+    clearInterval(timerCarga);
+
+    // Carregamento acelerado para demonstração.
     timerCarga = setInterval(() => {
       if (estado.recarga !== "carregando") return;
 
-      estado.bateria = Math.min(100, estado.bateria + 1);
+      estado.bateria = Math.min(
+        100, estado.bateria + 1
+      );
+
       atualizarBateria();
+      sincronizarEstado();
 
       if (estado.bateria >= 100) {
         concluirRecarga();
@@ -369,7 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     estado.recarga = "procurando";
     estado.velocidade = 0;
-    ajusteMotores.value = 0;
 
     atualizarMotores();
     atualizarBotoesRecarga();
@@ -379,16 +470,15 @@ document.addEventListener("DOMContentLoaded", () => {
       "BIBOU está se aproximando da base virtual."
     );
 
-    registrar("Busca da base iniciada", "🔎");
-
     bibouRecarga.classList.add("na-base");
+    sincronizarEstado();
 
+    registrar("Busca da base iniciada", "⌕");
+
+    clearTimeout(timerChegada);
     timerChegada = setTimeout(() => {
       timerChegada = null;
-
-      if (estado.recarga === "procurando") {
-        iniciarCarregamento();
-      }
+      iniciarCarregamento();
     }, 3000);
   });
 
@@ -400,6 +490,7 @@ document.addEventListener("DOMContentLoaded", () => {
     timerCarga = null;
 
     estado.recarga = "fora";
+
     bibouRecarga.classList.remove("na-base");
 
     atualizarEstadoRecarga(
@@ -409,11 +500,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     atualizarBateria();
     atualizarBotoesRecarga();
+    sincronizarEstado();
 
-    registrar("BIBOU saiu da base virtual", "🤖");
+    registrar("BIBOU saiu da base virtual", "↩");
   });
 
-  // ATUALIZAÇÃO AUTOMÁTICA
+  // LEITURAS AUTOMÁTICAS
+
   function executarLeituras() {
     gerarDistancias();
     atualizarBateria();
@@ -425,7 +518,10 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(timerLeituras);
 
     timerLeituras = setInterval(() => {
-      if (!estado.simulacaoAtiva) return;
+      if (!estado.simulacaoAtiva || document.hidden) {
+        return;
+      }
+
       executarLeituras();
     }, 3000);
   }
@@ -435,54 +531,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const ativa = estado.simulacaoAtiva;
 
-    $("estadoSimulacao").textContent = ativa
-      ? "Simulação ativa"
-      : "Leituras pausadas";
+    $("estadoSimulacao").textContent =
+      ativa ? "Simulação ativa" : "Leituras pausadas";
 
-    $("alternarSimulacao").textContent = ativa
-      ? "⏸ Pausar leituras"
-      : "▶ Retomar leituras";
+    $("alternarSimulacao").textContent =
+      ativa ? "Pausar leituras" : "Retomar leituras";
 
-    document.querySelector(".sen-live")
-      .classList.toggle("pausado", !ativa);
+    $("indicadorSimulacao").classList.toggle(
+      "pausado", !ativa
+    );
+
+    document.body.classList.toggle(
+      "leituras-pausadas", !ativa
+    );
 
     registrar(
       ativa ? "Leituras retomadas" : "Leituras pausadas",
-      ativa ? "▶️" : "⏸️"
+      ativa ? "▶" : "Ⅱ"
     );
   });
 
   $("novasLeituras").addEventListener("click", () => {
     executarLeituras();
-    registrar("Sensores virtuais atualizados", "📡");
-    notificar("✨ Novas leituras demonstrativas!");
+    registrar("Sensores virtuais atualizados", "↻");
+    notificar("Novas leituras demonstrativas!");
   });
 
-  // TELAS FUTURAS
-  document.querySelectorAll("[data-page]").forEach(botao => {
-    botao.addEventListener("click", () => {
+  // LIMPEZA DOS TEMPORIZADORES
 
-      if (botao.dataset.page === "Configurações") {
-        window.location.href = "configuracoes.html";
-        return;
-      }
-
-      fecharMenu();
-      notificar(
-        `✨ A tela "${botao.dataset.page}" será criada em breve!`
-      );
-    });
+  window.addEventListener("pagehide", () => {
+    clearInterval(timerLeituras);
+    clearInterval(timerCarga);
+    clearTimeout(timerChegada);
+    clearTimeout(timerToast);
   });
 
   // INICIALIZAÇÃO
+
   atualizarBateria();
   atualizarDistancias();
   atualizarInclinacao();
   atualizarMotores();
   atualizarBotoesRecarga();
+  sincronizarEstado();
   iniciarLeituras();
 
   console.log(
-    "BIBOU OS - Sensores e Energia demonstrativos ativos!"
+    "BIBOU OS — Sensores Premium carregados!"
   );
 });

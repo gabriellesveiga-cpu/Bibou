@@ -1,59 +1,66 @@
 
+/* ==========================================
+   BIBOU OS — MEMÓRIA PREMIUM
+   Preferências e memórias locais
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
+
   const $ = id => document.getElementById(id);
+
+  const CHAVE = "bibou_os_memoria_v1";
+  const LIMITE = 30;
+
+  const PERSONALIDADES = {
+    carinhoso: {
+      nome: "Carinhoso",
+      descricao: "Gentil e acolhedor"
+    },
+    divertido: {
+      nome: "Divertido",
+      descricao: "Animado e espontâneo"
+    },
+    curioso: {
+      nome: "Curioso",
+      descricao: "Atento e explorador"
+    },
+    tranquilo: {
+      nome: "Tranquilo",
+      descricao: "Calmo e sereno"
+    }
+  };
+
+  const ESTILOS = {
+    fofo: "Fofo",
+    animado: "Animado",
+    objetivo: "Objetivo",
+    calmo: "Calmo"
+  };
 
   const sidebar = $("sidebar");
   const menuToggle = $("menuToggle");
   const overlay = $("overlay");
-  const toast = $("toast");
 
-  const CHAVE = "bibou_os_memoria_v1";
-  let timerToast;
+  const nomeInput = $("nomeUsuario");
+  const corInput = $("corFavorita");
+  const estiloInput = $("estiloConversa");
+  const interessesInput = $("interessesUsuario");
 
-  const padrao = () => ({
-    personalidade: "carinhoso",
+  const novaMemoria = $("novaMemoria");
+  const listaMemorias = $("listaMemorias");
+
+  let dados = {
     nome: "",
     cor: "Roxo",
     interesses: "",
     estilo: "fofo",
+    personalidade: "carinhoso",
     memorias: []
-  });
+  };
 
-  // CARREGAR DADOS LOCAIS
-  function carregar() {
-    try {
-      const salvo = JSON.parse(localStorage.getItem(CHAVE));
+  // MENU RESPONSIVO
 
-      if (!salvo || typeof salvo !== "object" ||
-          Array.isArray(salvo)) {
-        return padrao();
-      }
-
-      const dados = { ...padrao(), ...salvo };
-
-      if (!Array.isArray(dados.memorias)) {
-        dados.memorias = [];
-      }
-
-      return dados;
-    } catch {
-      return padrao();
-    }
-  }
-
-  let dados = carregar();
-
-  function salvar() {
-    try {
-      localStorage.setItem(CHAVE, JSON.stringify(dados));
-      return true;
-    } catch {
-      notificar("Não foi possível salvar neste navegador.");
-      return false;
-    }
-  }
-
-  // MENU MOBILE
   function fecharMenu() {
     sidebar.classList.remove("aberto");
     overlay.hidden = true;
@@ -61,11 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   menuToggle.addEventListener("click", () => {
-    const abrir = !sidebar.classList.contains("aberto");
-
-    sidebar.classList.toggle("aberto", abrir);
-    overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+    const aberto = sidebar.classList.toggle("aberto");
+    overlay.hidden = !aberto;
+    menuToggle.setAttribute("aria-expanded", String(aberto));
   });
 
   overlay.addEventListener("click", fecharMenu);
@@ -74,313 +79,308 @@ document.addEventListener("DOMContentLoaded", () => {
     if (evento.key === "Escape") fecharMenu();
   });
 
-  // NOTIFICAÇÕES
-  function notificar(mensagem) {
-    clearTimeout(timerToast);
+  // ARMAZENAMENTO
+
+  function carregarDados() {
+    try {
+      const salvo = JSON.parse(localStorage.getItem(CHAVE));
+
+      if (!salvo || typeof salvo !== "object" ||
+          Array.isArray(salvo)) return;
+
+      dados = {
+        ...dados,
+        ...salvo,
+        nome: typeof salvo.nome === "string" ? salvo.nome : "",
+        cor: typeof salvo.cor === "string" ? salvo.cor : "Roxo",
+        interesses: typeof salvo.interesses === "string"
+          ? salvo.interesses : "",
+        estilo: ESTILOS[salvo.estilo]
+          ? salvo.estilo : "fofo",
+        personalidade: PERSONALIDADES[salvo.personalidade]
+          ? salvo.personalidade : "carinhoso",
+        memorias: Array.isArray(salvo.memorias)
+          ? salvo.memorias : []
+      };
+    } catch (erro) {
+      console.warn("Erro ao carregar memória:", erro);
+    }
+  }
+
+  function salvarDados() {
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify(dados));
+
+      // Notifica os módulos compartilhados.
+      window.dispatchEvent(
+        new CustomEvent("bibou:preferencias", {
+          detail: { origem: "memoria" }
+        })
+      );
+
+      return true;
+    } catch (erro) {
+      console.error("Erro ao salvar memória:", erro);
+      avisar("Não foi possível salvar os dados.");
+      return false;
+    }
+  }
+
+  // AVISOS
+
+  let timerToast;
+
+  function avisar(mensagem) {
+    const toast = $("toast");
+    if (!toast) return;
+
     toast.textContent = mensagem;
     toast.classList.add("visivel");
 
+    clearTimeout(timerToast);
+
     timerToast = setTimeout(() => {
       toast.classList.remove("visivel");
-    }, 3200);
+    }, 2800);
   }
 
-  // PERSONALIDADES
-  const personalidades = {
-    carinhoso: {
-      nome: "Carinhoso",
-      frase: "Oii! 💜 Adoro estar por aqui!"
-    },
-    divertido: {
-      nome: "Divertido",
-      frase: "Ebaaa! 🎉 Vamos inventar uma brincadeira?"
-    },
-    curioso: {
-      nome: "Curioso",
-      frase: "Hmm... 🔎 O que vamos descobrir hoje?"
-    },
-    tranquilo: {
-      nome: "Tranquilo",
-      frase: "Olá! 🌙 Vamos aproveitar um momento calmo."
-    }
-  };
+  // PREFERÊNCIAS
 
-  function atualizarPersonalidade() {
-    if (!personalidades[dados.personalidade]) {
-      dados.personalidade = "carinhoso";
-    }
+  function preencherFormulario() {
+    nomeInput.value = dados.nome;
+    corInput.value = dados.cor;
+    estiloInput.value = dados.estilo;
+    interessesInput.value = dados.interesses;
+  }
 
-    const atual = personalidades[dados.personalidade];
-
-    $("personalidadeAtual").textContent = atual.nome;
-    $("resumoPersonalidade").textContent = atual.nome;
-
-    const nome = dados.nome.trim();
-    const cumprimento = nome ? `${nome}, ` : "";
-
-    $("falaBibou").textContent =
-      cumprimento + atual.frase;
+  function renderizarPersonalidade() {
+    const personalidade =
+      PERSONALIDADES[dados.personalidade];
 
     document.querySelectorAll(
-      "[data-personality]"
+      "[data-personalidade]"
     ).forEach(botao => {
       const selecionado =
-        botao.dataset.personality === dados.personalidade;
+        botao.dataset.personalidade === dados.personalidade;
 
-      botao.classList.toggle("selecionada", selecionado);
+      botao.classList.toggle("ativo", selecionado);
       botao.setAttribute(
         "aria-pressed",
         String(selecionado)
       );
     });
+
+    $("personalidadeAtual").textContent =
+      personalidade.nome;
+
+    $("resumoPersonalidade").textContent =
+      personalidade.descricao;
+
+    $("estiloAtual").textContent =
+      ESTILOS[dados.estilo];
   }
 
   document.querySelectorAll(
-    "[data-personality]"
+    "[data-personalidade]"
   ).forEach(botao => {
     botao.addEventListener("click", () => {
-      dados.personalidade = botao.dataset.personality;
-      atualizarPersonalidade();
+      const personalidade = botao.dataset.personalidade;
 
-      if (salvar()) {
-        notificar("💜 Personalidade demonstrativa salva!");
+      if (!PERSONALIDADES[personalidade]) return;
+
+      dados.personalidade = personalidade;
+
+      if (salvarDados()) {
+        renderizarPersonalidade();
+        avisar("Personalidade atualizada!");
       }
     });
   });
 
-  // PREFERÊNCIAS
-  const estilos = {
-    fofo: "Fofo e amigável",
-    animado: "Animado e divertido",
-    objetivo: "Simples e objetivo",
-    calmo: "Calmo e gentil"
-  };
-
-  const cores = [
-    "Roxo", "Rosa", "Azul",
-    "Verde", "Amarelo", "Vermelho"
-  ];
-
-  function atualizarResumo() {
-    $("resumoNome").textContent =
-      dados.nome || "Não informado";
-
-    $("resumoCor").textContent = dados.cor;
-
-    $("resumoInteresses").textContent =
-      dados.interesses || "Não informado";
-
-    $("resumoEstilo").textContent =
-      estilos[dados.estilo] || estilos.fofo;
-
-    $("resumoMemorias").textContent =
-      dados.memorias.length;
-
-    atualizarPersonalidade();
-  }
-
-  function preencherFormulario() {
-    $("nomeUsuario").value = dados.nome;
-    $("corFavorita").value =
-      cores.includes(dados.cor) ? dados.cor : "Roxo";
-    $("interesses").value = dados.interesses;
-    $("estiloComunicacao").value =
-      estilos[dados.estilo] ? dados.estilo : "fofo";
-  }
-
   $("formPreferencias").addEventListener(
-    "submit", evento => {
+    "submit",
+    evento => {
       evento.preventDefault();
 
-      dados.nome = $("nomeUsuario").value.trim();
-      dados.cor = $("corFavorita").value;
-      dados.interesses = $("interesses").value.trim();
-      dados.estilo = $("estiloComunicacao").value;
+      dados.nome = nomeInput.value.trim();
+      dados.cor = corInput.value.trim() || "Roxo";
+      dados.estilo = ESTILOS[estiloInput.value]
+        ? estiloInput.value : "fofo";
+      dados.interesses = interessesInput.value.trim();
 
-      atualizarResumo();
-
-      if (salvar()) {
-        notificar("✨ Preferências salvas com sucesso!");
+      if (salvarDados()) {
+        renderizarPersonalidade();
+        avisar("Preferências salvas com sucesso!");
       }
     }
   );
 
   // MEMÓRIAS
-  function criarId() {
-    if (window.crypto && crypto.randomUUID) {
-      return crypto.randomUUID();
+
+  // Mantemos os itens existentes sem converter
+  // automaticamente o formato salvo anteriormente.
+
+  function textoDaMemoria(item) {
+    if (typeof item === "string") {
+      return item;
     }
 
-    return Date.now().toString(36) +
-      Math.random().toString(36).slice(2);
+    if (item && typeof item === "object") {
+      const campos = [
+        "texto", "conteudo", "memoria",
+        "descricao", "valor"
+      ];
+
+      for (const campo of campos) {
+        if (typeof item[campo] === "string") {
+          return item[campo];
+        }
+      }
+    }
+
+    return "";
   }
 
   function renderizarMemorias() {
-    const lista = $("listaMemorias");
-    lista.replaceChildren();
+    listaMemorias.replaceChildren();
 
-    const quantidade = dados.memorias.length;
+    const total = dados.memorias.length;
+
+    $("totalMemorias").textContent =
+      `${total} / ${LIMITE}`;
 
     $("contadorMemorias").textContent =
-      quantidade === 1
-        ? "1 lembrança"
-        : `${quantidade} lembranças`;
+      `${total} ${total === 1 ? "registro" : "registros"}`;
 
-    $("resumoMemorias").textContent = quantidade;
-
-    if (quantidade === 0) {
+    if (total === 0) {
       const vazio = document.createElement("div");
-      vazio.className = "mem-vazio";
+      vazio.className = "memory-empty";
       vazio.textContent =
-        "✨ Ainda não existem lembranças.";
-      lista.appendChild(vazio);
+        "Ainda não há memórias registradas. Adicione uma informação para começar.";
+      listaMemorias.appendChild(vazio);
       return;
     }
 
-    dados.memorias.forEach(memoria => {
-      const item = document.createElement("div");
-      item.className = "mem-lembranca";
-
-      const icone = document.createElement("span");
-      icone.className = "mem-lembranca-icone";
-      icone.textContent = "💜";
-
-      const info = document.createElement("div");
-      info.className = "mem-lembranca-info";
-
-      const titulo = document.createElement("strong");
-      titulo.textContent = memoria.titulo;
+    dados.memorias.forEach((item, indice) => {
+      const linha = document.createElement("div");
+      linha.className = "memory-item";
 
       const texto = document.createElement("p");
-      texto.textContent = memoria.texto;
+      texto.className = "memory-item-text";
+      texto.textContent =
+        textoDaMemoria(item) ||
+        "Registro em formato anterior";
 
-      const data = document.createElement("small");
-      data.textContent = memoria.data;
-
-      info.append(titulo, texto, data);
-
-      const excluir = document.createElement("button");
-      excluir.type = "button";
-      excluir.className = "mem-excluir";
-      excluir.textContent = "×";
-      excluir.title = "Excluir lembrança";
-      excluir.setAttribute(
+      const remover = document.createElement("button");
+      remover.type = "button";
+      remover.className = "memory-remove-button";
+      remover.textContent = "Excluir";
+      remover.setAttribute(
         "aria-label",
-        `Excluir lembrança ${memoria.titulo}`
+        `Excluir memória ${indice + 1}`
       );
 
-      excluir.addEventListener("click", () => {
-        const confirmar = confirm(
-          `Excluir a lembrança "${memoria.titulo}"?`
+      remover.addEventListener("click", () => {
+        const confirmar = window.confirm(
+          "Deseja excluir esta memória?"
         );
 
         if (!confirmar) return;
 
-        dados.memorias = dados.memorias.filter(
-          item => item.id !== memoria.id
-        );
+        const anterior = [...dados.memorias];
+        dados.memorias.splice(indice, 1);
 
-        salvar();
-        renderizarMemorias();
-        notificar("Lembrança excluída.");
+        if (salvarDados()) {
+          renderizarMemorias();
+          avisar("Memória excluída.");
+        } else {
+          dados.memorias = anterior;
+        }
       });
 
-      item.append(icone, info, excluir);
-      lista.appendChild(item);
+      linha.append(texto, remover);
+      listaMemorias.appendChild(linha);
     });
   }
 
-  $("formMemoria").addEventListener("submit", evento => {
-    evento.preventDefault();
+  $("formMemoria").addEventListener(
+    "submit",
+    evento => {
+      evento.preventDefault();
 
-    const titulo = $("tituloMemoria").value.trim();
-    const texto = $("textoMemoria").value.trim();
+      const texto = novaMemoria.value.trim();
 
-    if (!titulo || !texto) return;
-
-    if (dados.memorias.length >= 30) {
-      notificar("Limite demonstrativo de 30 lembranças.");
-      return;
-    }
-
-    const memoria = {
-      id: criarId(),
-      titulo,
-      texto,
-      data: new Date().toLocaleDateString("pt-BR")
-    };
-
-    dados.memorias.unshift(memoria);
-
-    if (salvar()) {
-      $("formMemoria").reset();
-      renderizarMemorias();
-      notificar("💜 Nova lembrança guardada!");
-    } else {
-      dados.memorias.shift();
-    }
-  });
-
-  // RESTAURAR DADOS
-  $("restaurarDados").addEventListener("click", () => {
-    const confirmar = confirm(
-      "Restaurar as configurações iniciais? " +
-      "Todas as lembranças locais serão excluídas."
-    );
-
-    if (!confirmar) return;
-
-    try {
-      localStorage.removeItem(CHAVE);
-      dados = padrao();
-
-      preencherFormulario();
-      atualizarResumo();
-      renderizarMemorias();
-
-      notificar("✨ Dados demonstrativos restaurados!");
-    } catch {
-      notificar("Não foi possível restaurar os dados.");
-    }
-  });
-
-  // TELAS FUTURAS
-  document.querySelectorAll("[data-page]").forEach(
-    botao => {
-      botao.addEventListener("click", () => {
-
-
-      if (botao.dataset.page === "Sensores") {
-        window.location.href = "sensores.html";
+      if (!texto) {
+        avisar("Escreva uma memória primeiro.");
         return;
       }
 
-      if (botao.dataset.page === "Energia") {
-        window.location.href = "sensores.html#energia";
+      if (dados.memorias.length >= LIMITE) {
+        avisar("O limite de 30 memórias foi atingido.");
         return;
       }
 
+      const anterior = [...dados.memorias];
 
-      if (botao.dataset.page === "Configurações") {
-        window.location.href = "configuracoes.html";
-        return;
+      // Registros simples são salvos como texto.
+      // Objetos antigos permanecem preservados.
+      dados.memorias.push(texto);
+
+      if (salvarDados()) {
+        novaMemoria.value = "";
+        renderizarMemorias();
+        avisar("Nova memória registrada!");
+      } else {
+        dados.memorias = anterior;
       }
-
-        fecharMenu();
-        notificar(
-          `✨ A tela "${botao.dataset.page}" será criada em breve!`
-        );
-      });
     }
   );
 
+  $("limparMemorias").addEventListener(
+    "click",
+    () => {
+      if (dados.memorias.length === 0) {
+        avisar("Não há memórias para excluir.");
+        return;
+      }
+
+      const confirmar = window.confirm(
+        "Deseja excluir TODAS as memórias registradas? Essa ação não pode ser desfeita."
+      );
+
+      if (!confirmar) return;
+
+      const anterior = [...dados.memorias];
+      dados.memorias = [];
+
+      if (salvarDados()) {
+        renderizarMemorias();
+        avisar("Todas as memórias foram excluídas.");
+      } else {
+        dados.memorias = anterior;
+      }
+    }
+  );
+
+  // ATUALIZAÇÃO ENTRE ABAS
+
+  window.addEventListener("storage", evento => {
+    if (evento.key !== CHAVE) return;
+
+    carregarDados();
+    preencherFormulario();
+    renderizarPersonalidade();
+    renderizarMemorias();
+  });
+
   // INICIALIZAÇÃO
+
+  carregarDados();
   preencherFormulario();
-  atualizarResumo();
+  renderizarPersonalidade();
   renderizarMemorias();
 
   console.log(
-    "BIBOU OS - Memória demonstrativa iniciada!"
+    "BIBOU OS — Memória Premium carregada!"
   );
 });
-

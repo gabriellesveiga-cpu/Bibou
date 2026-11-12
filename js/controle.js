@@ -1,54 +1,59 @@
 
+/* ==========================================
+   BIBOU OS — CONTROLE PREMIUM
+   Simulação de movimentos e gestos
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
+
   const $ = id => document.getElementById(id);
 
   const sidebar = $("sidebar");
   const menuToggle = $("menuToggle");
   const overlay = $("overlay");
-  const toast = $("toast");
-
-  const robo = $("roboAnimado");
-  const movimentoAtual = $("movimentoAtual");
-  const historico = $("historicoComandos");
-  const velocidade = $("velocidade");
-  const velocidadeValor = $("velocidadeValor");
 
   const joystick = $("joystick");
-  const knob = $("joystickKnob");
-
-  let movimento = null;
-  let arrastando = false;
-  let pointerAtivo = null;
-  let teclaAtiva = null;
-  let botaoAtivo = null;
-  let timerGesto = null;
-  let timerToast = null;
-
-  const classesMovimento = [
-    "mov-frente", "mov-tras",
-    "mov-esquerda", "mov-direita"
-  ];
-
-  const classesGesto = [
-    "dancando", "comemorando",
-    "descansando", "acenando",
-    "bracos-cima", "braco-esquerdo",
-    "braco-direito"
-  ];
-
-  const classesCabeca = [
-    "cabeca-cima", "cabeca-baixo",
-    "cabeca-esquerda", "cabeca-direita"
-  ];
+  const handle = $("joystickHandle");
+  const velocidadeInput = $("velocidade");
+  const velocidadeValor = $("velocidadeValor");
+  const movimentoAtual = $("movimentoAtual");
+  const ultimoComando = $("ultimoComando");
+  const horarioComando = $("horarioComando");
+  const robo = document.querySelector(".control-robot");
 
   const nomes = {
-    frente: "Indo para frente",
-    tras: "Indo para trás",
+    frente: "Avançando",
+    tras: "Recuando",
     esquerda: "Virando à esquerda",
-    direita: "Virando à direita"
+    direita: "Virando à direita",
+    acenar: "Acenando",
+    dancar: "Dançando",
+    feliz: "Expressão feliz",
+    descansar: "Descansando",
+    parar: "Em repouso"
   };
 
-  // MENU LATERAL
+  const teclas = {
+    w: "frente",
+    arrowup: "frente",
+    s: "tras",
+    arrowdown: "tras",
+    a: "esquerda",
+    arrowleft: "esquerda",
+    d: "direita",
+    arrowright: "direita"
+  };
+
+  let velocidade = 50;
+  let movimento = "parar";
+  let fonteAtiva = null;
+  let pointerAtivo = null;
+  let teclaAtiva = null;
+  let timerAcao = null;
+
+  // MENU RESPONSIVO
+
   function fecharMenu() {
     sidebar.classList.remove("aberto");
     overlay.hidden = true;
@@ -56,220 +61,216 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   menuToggle.addEventListener("click", () => {
-    const abrir = !sidebar.classList.contains("aberto");
-    sidebar.classList.toggle("aberto", abrir);
-    overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+    const aberto = sidebar.classList.toggle("aberto");
+    overlay.hidden = !aberto;
+    menuToggle.setAttribute("aria-expanded", String(aberto));
   });
 
   overlay.addEventListener("click", fecharMenu);
 
-  // NOTIFICAÇÕES
-  function notificar(texto) {
-    clearTimeout(timerToast);
-    toast.textContent = texto;
-    toast.classList.add("visivel");
+  document.addEventListener("keydown", evento => {
+    if (evento.key === "Escape") fecharMenu();
+  });
 
-    timerToast = setTimeout(() => {
-      toast.classList.remove("visivel");
-    }, 2800);
+  // ESTADO COMPARTILHADO
+
+  function compartilharVelocidade(valor) {
+    if (!window.BibouEstado) return;
+
+    window.BibouEstado.atualizar({
+      velocidade: valor
+    });
   }
 
-  // HISTÓRICO
-  function registrar(nome, icone = "✦") {
-    const vazio = historico.querySelector(".historico-vazio");
-    if (vazio) vazio.remove();
+  function registrarComando(nome) {
+    ultimoComando.textContent = nome;
+    horarioComando.textContent =
+      new Date().toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+  }
 
-    const item = document.createElement("div");
-    item.className = "historico-item";
-
-    const simbolo = document.createElement("span");
-    simbolo.className = "icone";
-    simbolo.textContent = icone;
-
-    const descricao = document.createElement("div");
-    descricao.className = "descricao";
-
-    const titulo = document.createElement("strong");
-    titulo.textContent = nome;
-
-    const detalhe = document.createElement("small");
-    detalhe.textContent = "Comando demonstrativo";
-
-    descricao.append(titulo, detalhe);
-
-    const hora = document.createElement("span");
-    hora.className = "hora";
-    hora.textContent = new Date().toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-
-    item.append(simbolo, descricao, hora);
-    historico.prepend(item);
-
-    while (historico.children.length > 6) {
-      historico.lastElementChild.remove();
+  function limparTimer() {
+    if (timerAcao !== null) {
+      clearTimeout(timerAcao);
+      timerAcao = null;
     }
   }
 
-  // ESTADO VISUAL
-  function definirEstado(texto) {
-    movimentoAtual.textContent = texto;
+  function atualizarVisual() {
+    movimentoAtual.textContent = nomes[movimento];
+
+    robo.classList.remove(
+      "moving", "dancing", "waving", "happy"
+    );
+
+    document.querySelectorAll(
+      ".direction-button[data-direcao]"
+    ).forEach(botao => {
+      botao.classList.toggle(
+        "pressed",
+        botao.dataset.direcao === movimento
+      );
+    });
+
+    if (["frente", "tras", "esquerda", "direita"]
+        .includes(movimento)) {
+      robo.classList.add("moving");
+    }
+
+    if (movimento === "dancar") {
+      robo.classList.add("dancing");
+    }
+
+    if (movimento === "acenar") {
+      robo.classList.add("waving");
+    }
+
+    if (movimento === "feliz") {
+      robo.classList.add("happy");
+    }
   }
 
-  function limparAnimacoes() {
-    robo.classList.remove(
-      ...classesMovimento,
-      ...classesGesto,
-      ...classesCabeca
+  function definirMovimento(novo, fonte = null) {
+    if (!nomes[novo]) return;
+
+    limparTimer();
+
+    movimento = novo;
+    fonteAtiva = fonte;
+
+    atualizarVisual();
+    registrarComando(nomes[novo]);
+
+    const emMovimento = [
+      "frente", "tras", "esquerda", "direita"
+    ].includes(novo);
+
+    compartilharVelocidade(
+      emMovimento ? velocidade : 0
     );
   }
 
   function centralizarJoystick() {
-    knob.style.left = "50%";
-    knob.style.top = "50%";
-  }
-
-  function pararMovimento() {
-    const anterior = movimento;
-    movimento = null;
-
-    robo.classList.remove(...classesMovimento);
-    centralizarJoystick();
-
-    if (anterior) {
-      definirEstado("Parado");
-      registrar("Movimento interrompido", "■");
-    }
+    handle.style.left = "50%";
+    handle.style.top = "50%";
   }
 
   function pararTudo() {
-    clearTimeout(timerGesto);
-    timerGesto = null;
-
-    movimento = null;
-    teclaAtiva = null;
-    botaoAtivo = null;
-    arrastando = false;
     pointerAtivo = null;
-
-    limparAnimacoes();
+    teclaAtiva = null;
     centralizarJoystick();
-    definirEstado("Parado");
-    registrar("Todas as animações paradas", "🛑");
-    notificar("💜 BIBOU está parado (simulação).");
+    definirMovimento("parar");
   }
 
-  $("pararTudo").addEventListener("click", pararTudo);
-  $("pararMini").addEventListener("click", pararTudo);
+  // VELOCIDADE
 
-  // MOVIMENTAÇÃO
-  function mover(direcao) {
-    if (Number(velocidade.value) === 0) {
-      pararMovimento();
-      definirEstado("Velocidade em 0%");
-      return;
+  velocidadeInput.addEventListener("input", () => {
+    velocidade = Number(velocidadeInput.value);
+    velocidadeValor.textContent = velocidade + "%";
+
+    if (["frente", "tras", "esquerda", "direita"]
+        .includes(movimento)) {
+      compartilharVelocidade(velocidade);
     }
+  });
 
-    if (movimento === direcao) return;
+  // JOYSTICK COM MOUSE E TOQUE
 
-    clearTimeout(timerGesto);
-    timerGesto = null;
+  function moverJoystick(evento) {
+    if (pointerAtivo !== evento.pointerId) return;
 
-    limparAnimacoes();
-
-    movimento = direcao;
-    robo.classList.add("mov-" + direcao);
-    definirEstado(nomes[direcao]);
-    registrar(nomes[direcao], "🎮");
-  }
-
-  // JOYSTICK POR ARRASTE
-  function atualizarJoystick(evento) {
     const rect = joystick.getBoundingClientRect();
     const centroX = rect.left + rect.width / 2;
     const centroY = rect.top + rect.height / 2;
 
-    const dx = evento.clientX - centroX;
-    const dy = evento.clientY - centroY;
+    let dx = evento.clientX - centroX;
+    let dy = evento.clientY - centroY;
 
     const limite = rect.width * 0.29;
     const distancia = Math.hypot(dx, dy);
-    const escala = distancia > limite ? limite / distancia : 1;
 
-    const x = dx * escala;
-    const y = dy * escala;
+    if (distancia > limite) {
+      dx = dx / distancia * limite;
+      dy = dy / distancia * limite;
+    }
 
-    knob.style.left = `calc(50% + ${x}px)`;
-    knob.style.top = `calc(50% + ${y}px)`;
+    handle.style.left = `calc(50% + ${dx}px)`;
+    handle.style.top = `calc(50% + ${dy}px)`;
 
-    if (Math.hypot(x, y) < limite * .25) {
-      pararMovimento();
+    const zonaMorta = limite * 0.22;
+
+    if (Math.hypot(dx, dy) < zonaMorta) {
+      if (fonteAtiva === "joystick") {
+        definirMovimento("parar");
+      }
       return;
     }
 
-    let direcao;
+    const direcao =
+      Math.abs(dx) > Math.abs(dy)
+        ? dx > 0 ? "direita" : "esquerda"
+        : dy > 0 ? "tras" : "frente";
 
-    if (Math.abs(x) > Math.abs(y)) {
-      direcao = x > 0 ? "direita" : "esquerda";
-    } else {
-      direcao = y > 0 ? "tras" : "frente";
+    if (movimento !== direcao || fonteAtiva !== "joystick") {
+      definirMovimento(direcao, "joystick");
     }
-
-    mover(direcao);
   }
 
   joystick.addEventListener("pointerdown", evento => {
-    if (arrastando) return;
+    if (pointerAtivo !== null) return;
 
-    arrastando = true;
     pointerAtivo = evento.pointerId;
-
     joystick.setPointerCapture(evento.pointerId);
-    atualizarJoystick(evento);
+    moverJoystick(evento);
   });
 
-  joystick.addEventListener("pointermove", evento => {
-    if (!arrastando || evento.pointerId !== pointerAtivo) return;
-    atualizarJoystick(evento);
-  });
+  joystick.addEventListener("pointermove", moverJoystick);
 
   function soltarJoystick(evento) {
-    if (evento.pointerId !== pointerAtivo) return;
+    if (pointerAtivo !== evento.pointerId) return;
 
-    arrastando = false;
     pointerAtivo = null;
-    pararMovimento();
+    centralizarJoystick();
+
+    if (fonteAtiva === "joystick") {
+      definirMovimento("parar");
+    }
   }
 
   joystick.addEventListener("pointerup", soltarJoystick);
   joystick.addEventListener("pointercancel", soltarJoystick);
-  joystick.addEventListener("lostpointercapture", evento => {
-    if (evento.pointerId === pointerAtivo) {
-      arrastando = false;
-      pointerAtivo = null;
-      pararMovimento();
-    }
-  });
+  joystick.addEventListener("lostpointercapture", soltarJoystick);
 
   // BOTÕES DIRECIONAIS
-  document.querySelectorAll("[data-move]").forEach(botao => {
-    botao.addEventListener("pointerdown", evento => {
-      if (botaoAtivo) return;
 
-      botaoAtivo = botao;
+  document.querySelectorAll(
+    "[data-direcao]"
+  ).forEach(botao => {
+    let idPointer = null;
+
+    botao.addEventListener("pointerdown", evento => {
+      if (idPointer !== null) return;
+
+      idPointer = evento.pointerId;
       botao.setPointerCapture(evento.pointerId);
-      botao.classList.add("pressionado");
-      mover(botao.dataset.move);
+
+      definirMovimento(
+        botao.dataset.direcao,
+        "botao"
+      );
     });
 
-    function soltar() {
-      if (botaoAtivo !== botao) return;
+    function soltar(evento) {
+      if (idPointer !== evento.pointerId) return;
 
-      botao.classList.remove("pressionado");
-      botaoAtivo = null;
-      pararMovimento();
+      idPointer = null;
+
+      if (fonteAtiva === "botao") {
+        definirMovimento("parar");
+      }
     }
 
     botao.addEventListener("pointerup", soltar);
@@ -277,50 +278,82 @@ document.addEventListener("DOMContentLoaded", () => {
     botao.addEventListener("lostpointercapture", soltar);
   });
 
-  // CONTROLE POR TECLADO
-  const teclas = {
-    ArrowUp: "frente",
-    ArrowDown: "tras",
-    ArrowLeft: "esquerda",
-    ArrowRight: "direita",
-    w: "frente",
-    s: "tras",
-    a: "esquerda",
-    d: "direita"
-  };
-
-  function campoEmFoco(elemento) {
-    return elemento &&
-      ["INPUT", "TEXTAREA", "SELECT"].includes(elemento.tagName);
-  }
+  // TECLADO W/A/S/D E SETAS
 
   document.addEventListener("keydown", evento => {
-    if (campoEmFoco(document.activeElement)) return;
+    const elemento = document.activeElement;
 
-    if (evento.key === "Escape" || evento.code === "Space") {
-      if (evento.code === "Space") evento.preventDefault();
-      pararTudo();
-      fecharMenu();
+    if (
+      elemento &&
+      ["INPUT", "TEXTAREA", "SELECT"].includes(elemento.tagName)
+    ) {
       return;
     }
 
-    const direcao = teclas[evento.key];
+    const tecla = evento.key.toLowerCase();
+    const direcao = teclas[tecla];
+
     if (!direcao) return;
 
     evento.preventDefault();
 
-    if (teclaAtiva === null) {
-      teclaAtiva = evento.key;
-      mover(direcao);
-    }
+    if (teclaAtiva === tecla && evento.repeat) return;
+
+    teclaAtiva = tecla;
+    definirMovimento(direcao, "teclado");
   });
 
   document.addEventListener("keyup", evento => {
-    if (evento.key !== teclaAtiva) return;
+    const tecla = evento.key.toLowerCase();
+
+    if (tecla !== teclaAtiva) return;
 
     teclaAtiva = null;
-    pararMovimento();
+
+    if (fonteAtiva === "teclado") {
+      definirMovimento("parar");
+    }
   });
+
+  // AÇÕES ESPECIAIS
+
+  document.querySelectorAll(
+    "[data-acao]"
+  ).forEach(botao => {
+    botao.addEventListener("click", () => {
+      pararTudo();
+
+      const acao = botao.dataset.acao;
+
+      definirMovimento(acao, "acao");
+
+      botao.classList.add("active");
+
+      timerAcao = setTimeout(() => {
+        botao.classList.remove("active");
+        timerAcao = null;
+
+        if (fonteAtiva === "acao") {
+          definirMovimento("parar");
+        }
+      }, 2200);
+    });
+  });
+
+  // PARADA
+
+  $("pararMovimento").addEventListener(
+    "click",
+    pararTudo
+  );
+
+  $("paradaGeral").addEventListener(
+    "click",
+    pararTudo
+  );
+
+  // SEGURANÇA DA SIMULAÇÃO:
+  // PARAR AO SAIR DA PÁGINA OU PERDER O FOCO
 
   window.addEventListener("blur", pararTudo);
 
@@ -328,159 +361,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.hidden) pararTudo();
   });
 
-  // VELOCIDADE SIMULADA
-  velocidade.addEventListener("input", () => {
-    velocidadeValor.textContent = velocidade.value + "%";
+  window.addEventListener("pagehide", pararTudo);
 
-    if (Number(velocidade.value) === 0) {
-      pararMovimento();
-      definirEstado("Velocidade em 0%");
-    }
-  });
+  // INICIALIZAÇÃO
 
-  // CABEÇA
-  document.querySelectorAll("[data-head]").forEach(botao => {
-    botao.addEventListener("click", () => {
-      pararMovimento();
-      clearTimeout(timerGesto);
-      robo.classList.remove(...classesCabeca);
+  velocidadeValor.textContent = velocidade + "%";
+  centralizarJoystick();
+  atualizarVisual();
 
-      const direcao = botao.dataset.head;
+  // Não deixar movimento antigo ativo ao abrir a tela.
+  compartilharVelocidade(0);
 
-      if (direcao !== "centro") {
-        robo.classList.add("cabeca-" + direcao);
-      }
-
-      const nome = direcao === "centro"
-        ? "Cabeça centralizada"
-        : "Olhando para " + direcao;
-
-      definirEstado(nome);
-      registrar(nome, "🤖");
-    });
-  });
-
-  // BRAÇOS
-  document.querySelectorAll("[data-arm]").forEach(botao => {
-    botao.addEventListener("click", () => {
-      pararMovimento();
-      clearTimeout(timerGesto);
-      robo.classList.remove(...classesGesto);
-
-      const acao = botao.dataset.arm;
-
-      const animacoes = {
-        levantar: "bracos-cima",
-        esquerdo: "braco-esquerdo",
-        direito: "braco-direito",
-        acenar: "acenando"
-      };
-
-      if (animacoes[acao]) {
-        robo.classList.add(animacoes[acao]);
-      }
-
-      const nomesBracos = {
-        levantar: "Braços levantados",
-        abaixar: "Braços abaixados",
-        esquerdo: "Braço esquerdo levantado",
-        direito: "Braço direito levantado",
-        acenar: "Acenando"
-      };
-
-      definirEstado(nomesBracos[acao]);
-      registrar(nomesBracos[acao], "🙌");
-    });
-  });
-
-  // GESTOS
-  document.querySelectorAll("[data-gesture]").forEach(botao => {
-    botao.addEventListener("click", () => {
-      pararMovimento();
-      clearTimeout(timerGesto);
-      limparAnimacoes();
-
-      const gesto = botao.dataset.gesture;
-
-      const gestos = {
-        dancar: {
-          classe: "dancando",
-          texto: "Dançando",
-          icone: "🎵"
-        },
-        oi: {
-          classe: "acenando",
-          texto: "Dizendo oi",
-          icone: "👋"
-        },
-        feliz: {
-          classe: "comemorando",
-          texto: "Comemorando",
-          icone: "🥳"
-        },
-        descansar: {
-          classe: "descansando",
-          texto: "Descansando",
-          icone: "💤"
-        }
-      };
-
-      const escolhido = gestos[gesto];
-
-      robo.classList.add(escolhido.classe);
-      definirEstado(escolhido.texto);
-      registrar(escolhido.texto, escolhido.icone);
-
-      if (gesto !== "descansar") {
-        timerGesto = setTimeout(() => {
-          limparAnimacoes();
-          definirEstado("Parado");
-          timerGesto = null;
-        }, 3000);
-      }
-    });
-  });
-
-  // TELAS FUTURAS
-  document.querySelectorAll("[data-page]").forEach(botao => {
-    botao.addEventListener("click", () => {
-
-      if (botao.dataset.page === "Expressões") {
-        window.location.href = "expressoes.html";
-        return;
-      }
-
-      fecharMenu();
-
-
-      if (botao.dataset.page === "Memória") {
-        window.location.href = "memoria.html";
-        return;
-      }
-
-
-      if (botao.dataset.page === "Sensores") {
-        window.location.href = "sensores.html";
-        return;
-      }
-
-      if (botao.dataset.page === "Energia") {
-        window.location.href = "sensores.html#energia";
-        return;
-      }
-
-
-      if (botao.dataset.page === "Configurações") {
-        window.location.href = "configuracoes.html";
-        return;
-      }
-
-
-      notificar(
-        `✨ A tela "${botao.dataset.page}" será criada em breve!`
-      );
-    });
-  });
-
-  console.log("BIBOU OS - Controle demonstrativo ativo");
+  console.log(
+    "BIBOU OS — Controle Premium carregado!"
+  );
 });

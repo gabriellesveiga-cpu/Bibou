@@ -4,348 +4,278 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#100b20">
-  <title>BIBOU OS | Conexão e Configurações</title>
+  <meta name="theme-color" content="#15121d">
+  <title>Configurações | BIBOU OS</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/design-system.css">
   <link rel="stylesheet" href="../css/configuracao.css">
-  <script src="../js/configuracao.js" defer></script>
+
+  <script src="../js/bibou-estado.js" defer></script>
+  <script src="../js/bibou-preferencias.js" defer></script>
+  <script src="../js/configuracoes.js" defer></script>
+  <script src="../js/navegacao.js" defer></script>
 </head>
-<body>
-<div class="app">
 
-  <aside class="sidebar" id="sidebar">
-    <a href="index.html" class="logo">
-      <span class="logo-star">✦</span>
-      BIBOU <span>OS</span>
-    </a>
-
-    <div class="menu-label">MENU PRINCIPAL</div>
-
-    <nav class="menu" aria-label="Menu principal">
-      <a class="menu-item" href="dashboard.html">
-        <span>⌂</span> Início
+<body class="config-premium">
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="logo">
+        <span class="brand-symbol">b<span>.</span></span>
+        <span class="brand-name">bibou <small>OS</small></span>
       </a>
-      <a class="menu-item" href="conversar.html">
-        <span>☏</span> Conversar
-      </a>
-      <a class="menu-item" href="controle.html">
-        <span>✥</span> Controle
-      </a>
-      <a class="menu-item" href="expressoes.html">
-        <span>☺</span> Expressões
-      </a>
-      <a class="menu-item" href="memoria.html">
-        <span>✧</span> Memória
-      </a>
-      <a class="menu-item" href="sensores.html">
-        <span>◈</span> Sensores
-      </a>
-      <a class="menu-item" href="sensores.html#energia">
-        <span>ϟ</span> Energia
-      </a>
-      <a class="menu-item ativo" href="configuracoes.html"
-         aria-current="page">
-        <span>⚙</span> Configurações
-      </a>
-    </nav>
 
-    <div class="sidebar-bottom">
-      <div class="mini-robo">🤖</div>
-      <strong>BIBOU OS</strong>
-      <small>Versão demonstrativa 1.0</small>
-    </div>
-  </aside>
+      <div class="menu-label">WORKSPACE</div>
+      <nav class="menu" aria-label="Menu principal">
+        <a href="dashboard.html" class="menu-item"><span class="nav-icon">⌂</span> Visão geral</a>
+        <a href="conversar.html" class="menu-item"><span class="nav-icon">◌</span> Conversar</a>
+        <a href="controle.html" class="menu-item"><span class="nav-icon">✣</span> Controle</a>
+        <a href="expressoes.html" class="menu-item"><span class="nav-icon">◡</span> Expressões</a>
 
-  <div class="conteudo">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button id="menuToggle" class="menu-toggle"
-                aria-label="Abrir menu"
-                aria-expanded="false">☰</button>
-        <div>
-          <span class="topbar-label">CENTRAL DO SISTEMA</span>
-          <h1>Configurações <span>✦</span></h1>
-        </div>
-      </div>
+        <div class="menu-label menu-label-second">SISTEMA</div>
 
-      <div class="status-demo">
-        <span class="status-dot"></span>
-        Modo demonstração
-      </div>
-    </header>
+        <a href="memoria.html" class="menu-item"><span class="nav-icon">◇</span> Memória</a>
+        <a href="sensores.html" class="menu-item"><span class="nav-icon">⌁</span> Sensores</a>
+        <a href="sensores.html#energia" class="menu-item"><span class="nav-icon">ϟ</span> Energia</a>
+        <a href="configuracoes.html" class="menu-item ativo" aria-current="page"><span class="nav-icon">⚙</span> Configurações</a>
+      </nav>
 
-    <main>
-      <section class="cfg-hero">
-        <div>
-          <span class="cfg-label">✦ PERSONALIZE SEU COMPANHEIRO</span>
-          <h2>Seu BIBOU, do seu jeitinho!</h2>
-          <p>
-            Gerencie a conexão demonstrativa,
-            personalize o aplicativo e conheça
-            as informações do sistema.
-          </p>
-        </div>
-        <span class="cfg-hero-icon">🤖💜</span>
-      </section>
-
-      <div class="cfg-grid">
-
-        <!-- CONEXÃO -->
-        <section class="card cfg-card cfg-connection">
-          <div class="cfg-heading">
-            <div>
-              <span class="cfg-label">DISPOSITIVOS</span>
-              <h2>Conectar ao BIBOU</h2>
-            </div>
-            <span class="cfg-heading-icon">📡</span>
+      <div class="sidebar-bottom">
+        <div class="sidebar-device">
+          <span class="sidebar-device-dot"></span>
+          <div>
+            <strong data-bibou-nome>BIBOU</strong>
+            <small>Ambiente de demonstração</small>
           </div>
+        </div>
+        <p>Interface BIBOU OS · v1.0</p>
+      </div>
+    </aside>
 
-          <div class="cfg-device">
-            <div class="cfg-robot">
-              <div class="cfg-antenna"></div>
-              <div class="cfg-head">
-                <div class="cfg-screen">
-                  <div class="cfg-eyes">
-                    <span></span><span></span>
+    <div class="overlay" id="overlay" hidden></div>
+
+    <div class="conteudo">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menuToggle" class="menu-toggle" type="button"
+                  aria-label="Abrir menu" aria-expanded="false">☰</button>
+          <div class="breadcrumb">
+            <span>BIBOU OS</span>
+            <span class="breadcrumb-divider">/</span>
+            <strong>Configurações</strong>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <span class="topbar-demo"><span></span> Modo demonstração</span>
+          <a href="dashboard.html" class="profile-button" aria-label="Voltar ao Dashboard">⌂</a>
+        </div>
+      </header>
+
+      <main class="config-main">
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">PERSONALIZAÇÃO DO SISTEMA</span>
+            <h1>Configurações</h1>
+            <p>Personalize o BIBOU e prepare o aplicativo para as próximas integrações.</p>
+          </div>
+          <span class="config-tag">BIBOU OS · 1.0</span>
+        </div>
+
+        <div class="config-grid">
+
+          <section class="config-panel config-device-panel">
+            <div class="config-panel-heading">
+              <div>
+                <span class="config-overline">DISPOSITIVOS</span>
+                <h2>Conexão com o BIBOU</h2>
+                <p>Encontre e conecte um robô virtual para testar a interface.</p>
+              </div>
+              <span class="config-heading-icon">⌁</span>
+            </div>
+
+            <div class="config-device-card">
+              <div class="cfg-robot" aria-hidden="true">
+                <div class="cfg-antenna"></div>
+                <div class="cfg-head">
+                  <div class="cfg-screen">
+                    <div class="cfg-eyes"><span></span><span></span></div>
                   </div>
-                  <div class="cfg-mouth"></div>
+                </div>
+                <div class="cfg-body">
+                  <div class="cfg-emblem">b</div>
+                </div>
+                <div class="cfg-wheels"><span></span><span></span></div>
+              </div>
+
+              <div class="config-device-info">
+                <span class="config-overline">DISPOSITIVO VIRTUAL</span>
+                <h3 id="nomeDispositivo">BIBOU</h3>
+                <span id="statusConexao" class="cfg-status disconnected"
+                      role="status" aria-live="polite">● Desconectado</span>
+                <p id="descricaoConexao">Nenhuma conexão demonstrativa ativa.</p>
+              </div>
+            </div>
+
+            <div class="config-connection-actions">
+              <button id="buscarDispositivos" class="config-primary" type="button">⌕ Buscar dispositivo</button>
+              <button id="desconectar" class="config-secondary" type="button" disabled>Desconectar</button>
+            </div>
+
+            <div id="resultadoBusca" class="config-search-result" hidden>
+              <div class="config-found-device">
+                <span class="config-found-icon">◉</span>
+                <div>
+                  <strong id="nomeEncontrado">BIBOU</strong>
+                  <small>Dispositivo virtual encontrado</small>
+                </div>
+                <button id="conectar" class="config-small-button" type="button">Conectar</button>
+              </div>
+            </div>
+
+            <div class="config-notice">
+              <strong>Conexão demonstrativa</strong>
+              <p>A busca e o pareamento são simulados. Nenhuma rede Wi-Fi ou Bluetooth é acessada e nenhum robô físico é controlado.</p>
+            </div>
+          </section>
+
+          <section class="config-panel">
+            <div class="config-panel-heading">
+              <div>
+                <span class="config-overline">PREFERÊNCIAS</span>
+                <h2>Configurações gerais</h2>
+                <p>Escolha como o aplicativo deve se comportar.</p>
+              </div>
+              <span class="config-heading-icon">⚙</span>
+            </div>
+
+            <form id="formConfiguracoes" class="config-form">
+              <div class="config-field">
+                <label for="nomeRobo">Nome do robô</label>
+                <input id="nomeRobo" type="text" maxlength="30" value="BIBOU" required>
+              </div>
+
+              <div class="config-field">
+                <label for="modoConexao">Conexão futura preferida</label>
+                <select id="modoConexao">
+                  <option value="wifi">Wi-Fi</option>
+                  <option value="bluetooth">Bluetooth</option>
+                  <option value="automatico">Automática</option>
+                </select>
+              </div>
+
+              <div class="config-options">
+                <div class="config-toggle-row">
+                  <div><strong>Sons do aplicativo</strong><small>Efeitos sonoros locais</small></div>
+                  <label class="config-switch">
+                    <input id="sonsAtivos" type="checkbox" checked aria-label="Ativar sons">
+                    <span></span>
+                  </label>
+                </div>
+
+                <div class="config-toggle-row">
+                  <div><strong>Notificações visuais</strong><small>Mensagens de confirmação</small></div>
+                  <label class="config-switch">
+                    <input id="notificacoesAtivas" type="checkbox" checked aria-label="Ativar notificações">
+                    <span></span>
+                  </label>
+                </div>
+
+                <div class="config-toggle-row">
+                  <div><strong>Animações do aplicativo</strong><small>Movimentos decorativos</small></div>
+                  <label class="config-switch">
+                    <input id="animacoesAtivas" type="checkbox" checked aria-label="Ativar animações">
+                    <span></span>
+                  </label>
                 </div>
               </div>
-            </div>
 
-            <div class="cfg-device-info">
-              <small>DISPOSITIVO VIRTUAL</small>
-              <h3 id="nomeDispositivo">BIBOU</h3>
-              <span id="statusConexao"
-                    class="cfg-status disconnected"
-                    role="status" aria-live="polite">
-                ● Desconectado
-              </span>
-              <p id="descricaoConexao">
-                Nenhuma conexão demonstrativa ativa.
-              </p>
-            </div>
-          </div>
+              <div class="config-range">
+                <div>
+                  <label for="intensidadeEfeitos">Intensidade dos efeitos</label>
+                  <strong id="intensidadeValor">70%</strong>
+                </div>
+                <input id="intensidadeEfeitos" type="range" min="0" max="100" value="70">
+                <div class="config-range-labels"><span>Suave</span><span>Intenso</span></div>
+              </div>
 
-          <div class="cfg-connection-actions">
-            <button id="buscarDispositivos" class="cfg-primary">
-              ⌕ Buscar dispositivo
-            </button>
-            <button id="desconectar" class="cfg-secondary"
-                    disabled>
-              Desconectar
-            </button>
-          </div>
+              <button class="config-primary config-full" type="submit">Salvar configurações</button>
+            </form>
+          </section>
 
-          <div id="resultadoBusca" class="cfg-search-result"
-               hidden>
-            <div class="cfg-found-device">
-              <span>🤖</span>
+          <section class="config-panel">
+            <div class="config-panel-heading">
               <div>
-                <strong id="nomeEncontrado">BIBOU</strong>
-                <small>Dispositivo virtual encontrado</small>
+                <span class="config-overline">SISTEMA</span>
+                <h2>Informações do BIBOU OS</h2>
+                <p>Detalhes da versão atual do projeto.</p>
               </div>
-              <button id="conectar" class="cfg-small-button">
-                Conectar
-              </button>
+              <span class="config-heading-icon">◇</span>
             </div>
-          </div>
 
-          <div class="cfg-notice">
-            <strong>ℹ️ Simulação de conexão</strong>
-            <p>
-              Nenhuma rede Wi-Fi ou Bluetooth será
-              acessada. O pareamento é apenas visual
-              e não controla o robô físico.
-            </p>
-          </div>
-        </section>
-
-        <!-- CONFIGURAÇÕES GERAIS -->
-        <section class="card cfg-card">
-          <div class="cfg-heading">
-            <div>
-              <span class="cfg-label">PREFERÊNCIAS</span>
-              <h2>Configurações gerais</h2>
+            <div class="config-system-list">
+              <div><span>Aplicativo</span><strong>BIBOU OS</strong></div>
+              <div><span>Versão</span><strong>1.0 · Demonstração</strong></div>
+              <div><span>Plataforma</span><strong>Web responsiva</strong></div>
+              <div><span>Microcontrolador previsto</span><strong>ESP32</strong></div>
+              <div><span>Conexão física</span><strong>Não implementada</strong></div>
+              <div><span>Armazenamento</span><strong>Local no navegador</strong></div>
             </div>
-            <span class="cfg-heading-icon">⚙️</span>
-          </div>
 
-          <form id="formConfiguracoes" class="cfg-form">
-            <label for="nomeRobo">Nome do robô</label>
-            <input id="nomeRobo" type="text"
-                   maxlength="30" value="BIBOU" required>
+            <div class="config-system-note">
+              <span>✦</span>
+              <p>O BIBOU OS está sendo preparado para se tornar a central de controle do nosso robô companheiro.</p>
+            </div>
+          </section>
 
-            <label for="modoConexao">Conexão futura preferida</label>
-            <select id="modoConexao">
-              <option value="wifi">Wi-Fi</option>
-              <option value="bluetooth">Bluetooth</option>
-              <option value="automatico">Automática</option>
-            </select>
-
-            <div class="cfg-toggle-row">
+          <section class="config-panel">
+            <div class="config-panel-heading">
               <div>
-                <strong>Sons do aplicativo</strong>
-                <small>Ativar efeitos sonoros locais</small>
+                <span class="config-overline">MANUTENÇÃO</span>
+                <h2>Gerenciar o aplicativo</h2>
+                <p>Teste recursos e restaure preferências quando necessário.</p>
               </div>
-              <label class="cfg-switch">
-                <input id="sonsAtivos" type="checkbox" checked>
-                <span class="cfg-switch-track"></span>
-              </label>
+              <span class="config-heading-icon">◷</span>
             </div>
 
-            <div class="cfg-toggle-row">
-              <div>
-                <strong>Notificações visuais</strong>
-                <small>Mostrar mensagens de confirmação</small>
+            <div class="config-maintenance">
+              <div class="config-maintenance-item">
+                <div>
+                  <strong>Testar notificações</strong>
+                  <p>Exibe uma mensagem demonstrativa e reproduz um som, se estiver ativado.</p>
+                </div>
+                <button id="testarNotificacao" class="config-secondary" type="button">Testar</button>
               </div>
-              <label class="cfg-switch">
-                <input id="notificacoesAtivas"
-                       type="checkbox" checked>
-                <span class="cfg-switch-track"></span>
-              </label>
-            </div>
 
-            <div class="cfg-toggle-row">
-              <div>
-                <strong>Animações do aplicativo</strong>
-                <small>Movimentos decorativos nesta tela</small>
-              </div>
-              <label class="cfg-switch">
-                <input id="animacoesAtivas"
-                       type="checkbox" checked>
-                <span class="cfg-switch-track"></span>
-              </label>
-            </div>
-
-            <div class="cfg-range-group">
-              <div class="cfg-range-heading">
-                <label for="intensidadeEfeitos">
-                  Intensidade dos efeitos
-                </label>
-                <strong id="intensidadeValor">70%</strong>
-              </div>
-              <input id="intensidadeEfeitos" type="range"
-                     min="0" max="100" value="70">
-              <div class="cfg-range-labels">
-                <span>Suave</span><span>Intenso</span>
+              <div class="config-maintenance-item">
+                <div>
+                  <strong>Restaurar configurações</strong>
+                  <p>Retorna as preferências desta página aos valores iniciais.</p>
+                </div>
+                <button id="restaurarConfiguracoes" class="config-danger" type="button">Restaurar</button>
               </div>
             </div>
 
-            <button type="submit" class="cfg-primary cfg-full">
-              💜 Salvar configurações
-            </button>
-          </form>
-        </section>
+            <div class="config-notice">
+              <strong>Seus dados estão preservados</strong>
+              <p>Restaurar as configurações não exclui as memórias cadastradas na página Memória e Personalidade.</p>
+            </div>
+          </section>
 
-        <!-- INFORMAÇÕES DO SISTEMA -->
-        <section class="card cfg-card">
-          <div class="cfg-heading">
-            <div>
-              <span class="cfg-label">SOBRE O SISTEMA</span>
-              <h2>Informações do BIBOU OS</h2>
-            </div>
-            <span class="cfg-heading-icon">💻</span>
-          </div>
+        </div>
+      </main>
 
-          <div class="cfg-system-list">
-            <div>
-              <span>Aplicativo</span>
-              <strong>BIBOU OS</strong>
-            </div>
-            <div>
-              <span>Versão da interface</span>
-              <strong>1.0 • Demo</strong>
-            </div>
-            <div>
-              <span>Plataforma atual</span>
-              <strong>Web responsiva</strong>
-            </div>
-            <div>
-              <span>Microcontrolador previsto</span>
-              <strong>ESP32</strong>
-            </div>
-            <div>
-              <span>Conexão física</span>
-              <strong>Não implementada</strong>
-            </div>
-            <div>
-              <span>Armazenamento de preferências</span>
-              <strong>Local no navegador</strong>
-            </div>
-          </div>
-
-          <div class="cfg-system-footer">
-            <span>✦</span>
-            <p>
-              Uma interface feita para acompanhar
-              o desenvolvimento do BIBOU, nosso
-              pequeno robô companheiro.
-            </p>
-          </div>
-        </section>
-
-        <!-- MANUTENÇÃO -->
-        <section class="card cfg-card">
-          <div class="cfg-heading">
-            <div>
-              <span class="cfg-label">MANUTENÇÃO</span>
-              <h2>Gerenciar configurações</h2>
-            </div>
-            <span class="cfg-heading-icon">🛠️</span>
-          </div>
-
-          <div class="cfg-maintenance">
-            <div class="cfg-maintenance-item">
-              <div>
-                <strong>Testar notificações</strong>
-                <p>
-                  Exibe uma mensagem demonstrativa.
-                </p>
-              </div>
-              <button id="testarNotificacao"
-                      class="cfg-secondary">
-                Testar
-              </button>
-            </div>
-
-            <div class="cfg-maintenance-item">
-              <div>
-                <strong>Restaurar configurações</strong>
-                <p>
-                  Volta às preferências iniciais desta tela.
-                </p>
-              </div>
-              <button id="restaurarConfiguracoes"
-                      class="cfg-danger">
-                Restaurar
-              </button>
-            </div>
-          </div>
-
-          <div class="cfg-warning">
-            <strong>🔒 Seus dados</strong>
-            <p>
-              Restaurar esta tela não apaga as lembranças
-              cadastradas na página Memória. As opções
-              salvas aqui ainda não alteram as demais telas.
-            </p>
-          </div>
-        </section>
-
-      </div>
-    </main>
-
-    <footer class="rodape">
-      <span>BIBOU OS • Desenvolvido com 💜</span>
-      <span>Conexão e Configurações • Versão 1.0 Demo</span>
-    </footer>
+      <footer class="rodape">
+        <span>BIBOU OS © 2026</span>
+        <span>Seu companheiro, suas preferências.</span>
+      </footer>
+    </div>
   </div>
-</div>
 
-<div class="overlay" id="overlay" hidden></div>
-<div id="toast" class="toast" role="status"
-     aria-live="polite"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

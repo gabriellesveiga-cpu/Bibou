@@ -1,22 +1,32 @@
 
+/* ==========================================
+   BIBOU OS — CONVERSAR PREMIUM
+   Chat demonstrativo
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
-  const mensagens = document.getElementById("mensagens");
-  const formChat = document.getElementById("formChat");
-  const campo = document.getElementById("campoMensagem");
-  const digitando = document.getElementById("digitando");
-  const limparChat = document.getElementById("limparChat");
-  const microfone = document.getElementById("microfone");
-  const toast = document.getElementById("toast");
+  "use strict";
 
-  const sidebar = document.getElementById("sidebar");
-  const menuToggle = document.getElementById("menuToggle");
-  const overlay = document.getElementById("overlay");
+  const CHAVE = "bibou_os_chat_premium_v1";
+  const LIMITE = 60;
 
-  let aguardandoResposta = false;
-  let temporizadorResposta = null;
-  let temporizadorToast = null;
+  const $ = id => document.getElementById(id);
+
+  const mensagens = $("mensagens");
+  const formulario = $("formConversa");
+  const entrada = $("entradaMensagem");
+  const enviar = $("enviarMensagem");
+  const limpar = $("limparConversa");
+  const sidebar = $("sidebar");
+  const menuToggle = $("menuToggle");
+  const overlay = $("overlay");
+
+  let historico = [];
+  let respondendo = false;
+  let timerResposta = null;
 
   // MENU RESPONSIVO
+
   function fecharMenu() {
     sidebar.classList.remove("aberto");
     overlay.hidden = true;
@@ -24,10 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   menuToggle.addEventListener("click", () => {
-    const abrir = !sidebar.classList.contains("aberto");
-    sidebar.classList.toggle("aberto", abrir);
-    overlay.hidden = !abrir;
-    menuToggle.setAttribute("aria-expanded", String(abrir));
+    const aberto = sidebar.classList.toggle("aberto");
+    overlay.hidden = !aberto;
+    menuToggle.setAttribute("aria-expanded", String(aberto));
   });
 
   overlay.addEventListener("click", fecharMenu);
@@ -36,262 +45,444 @@ document.addEventListener("DOMContentLoaded", () => {
     if (evento.key === "Escape") fecharMenu();
   });
 
-  // NOTIFICAÇÕES
-  function notificar(texto) {
-    clearTimeout(temporizadorToast);
-    toast.textContent = texto;
-    toast.classList.add("visivel");
+  // PREFERÊNCIAS
 
-    temporizadorToast = setTimeout(() => {
-      toast.classList.remove("visivel");
-    }, 3500);
+  function preferencias() {
+    if (!window.BibouPreferencias) {
+      return {
+        usuario: { nome: "", personalidade: "carinhoso" },
+        robo: { nome: "BIBOU" }
+      };
+    }
+
+    return window.BibouPreferencias.obterTudo();
   }
 
-  // HORÁRIO DAS MENSAGENS
-  function horario() {
-    return new Date().toLocaleTimeString("pt-BR", {
+  function personalidadeAtual() {
+    return preferencias().usuario.personalidade;
+  }
+
+  function nomeRobo() {
+    return preferencias().robo.nome || "BIBOU";
+  }
+
+  // HISTÓRICO
+
+  function carregarHistorico() {
+    try {
+      const dados = JSON.parse(localStorage.getItem(CHAVE));
+
+      if (!Array.isArray(dados)) return [];
+
+      return dados.filter(item =>
+        item &&
+        (item.autor === "user" || item.autor === "bot") &&
+        typeof item.texto === "string" &&
+        typeof item.hora === "string"
+      ).slice(-LIMITE);
+    } catch {
+      return [];
+    }
+  }
+
+  function salvarHistorico() {
+    try {
+      localStorage.setItem(
+        CHAVE,
+        JSON.stringify(historico.slice(-LIMITE))
+      );
+    } catch (erro) {
+      console.warn("Não foi possível salvar o chat:", erro);
+    }
+  }
+
+  function formatarHora(data = new Date()) {
+    return data.toLocaleTimeString("pt-BR", {
       hour: "2-digit",
       minute: "2-digit"
     });
   }
 
-  // ADICIONAR MENSAGEM
-  function adicionarMensagem(texto, autor) {
-    const elemento = document.createElement("div");
-    elemento.className =
-      `mensagem mensagem-${autor}`;
+  // INTERFACE
 
-    const avatar = document.createElement("div");
-    avatar.className = "mensagem-avatar";
-    avatar.textContent = autor === "bibou" ? "🤖" : "💜";
+  function rolarParaFim() {
+    mensagens.scrollTop = mensagens.scrollHeight;
+  }
+
+  function criarMensagem(autor, texto, hora) {
+    const linha = document.createElement("div");
+    linha.className = `chat-message ${autor}`;
+
+    if (autor === "bot") {
+      const avatar = document.createElement("div");
+      avatar.className = "message-avatar";
+      avatar.textContent = "b.";
+      linha.appendChild(avatar);
+    }
 
     const conteudo = document.createElement("div");
-    conteudo.className = "mensagem-conteudo";
+    conteudo.className = "message-content";
 
     const balao = document.createElement("div");
-    balao.className = "balao";
+    balao.className = "message-bubble";
     balao.textContent = texto;
 
-    const hora = document.createElement("small");
-    hora.textContent =
-      `${autor === "bibou" ? "BIBOU" : "Você"} • ${horario()}`;
+    const horario = document.createElement("time");
+    horario.className = "message-time";
+    horario.textContent = hora;
 
-    conteudo.append(balao, hora);
-    elemento.append(avatar, conteudo);
-    mensagens.appendChild(elemento);
+    conteudo.appendChild(balao);
+    conteudo.appendChild(horario);
+    linha.appendChild(conteudo);
 
-    mensagens.scrollTop = mensagens.scrollHeight;
+    mensagens.appendChild(linha);
+    rolarParaFim();
+  }
+
+  function mostrarBoasVindas() {
+    const usuario = preferencias().usuario.nome;
+    const nome = nomeRobo();
+
+    const bloco = document.createElement("div");
+    bloco.className = "chat-welcome";
+
+    const icone = document.createElement("div");
+    icone.className = "chat-welcome-icon";
+    icone.textContent = "b.";
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = `Converse com ${nome}`;
+
+    const descricao = document.createElement("p");
+    descricao.textContent = usuario
+      ? `Olá, ${usuario}! Estou aqui para conversar com você.`
+      : "Estou aqui para conversar com você.";
+
+    bloco.append(icone, titulo, descricao);
+    mensagens.appendChild(bloco);
+  }
+
+  function renderizarHistorico() {
+    mensagens.replaceChildren();
+
+    if (historico.length === 0) {
+      mostrarBoasVindas();
+    } else {
+      historico.forEach(item => {
+        criarMensagem(item.autor, item.texto, item.hora);
+      });
+    }
+
+    rolarParaFim();
+  }
+
+  function adicionarMensagem(autor, texto) {
+    const item = {
+      autor,
+      texto,
+      hora: formatarHora()
+    };
+
+    if (historico.length === 0) {
+      mensagens.replaceChildren();
+    }
+
+    historico.push(item);
+    historico = historico.slice(-LIMITE);
+
+    salvarHistorico();
+    criarMensagem(autor, texto, item.hora);
+  }
+
+  function mostrarDigitando() {
+    const linha = document.createElement("div");
+    linha.className = "chat-message bot";
+    linha.id = "digitando";
+
+    const avatar = document.createElement("div");
+    avatar.className = "message-avatar";
+    avatar.textContent = "b.";
+
+    const conteudo = document.createElement("div");
+    conteudo.className = "message-bubble";
+
+    const pontos = document.createElement("div");
+    pontos.className = "typing-dots";
+
+    for (let i = 0; i < 3; i++) {
+      pontos.appendChild(document.createElement("span"));
+    }
+
+    conteudo.appendChild(pontos);
+    linha.append(avatar, conteudo);
+    mensagens.appendChild(linha);
+
+    rolarParaFim();
+  }
+
+  function esconderDigitando() {
+    $("digitando")?.remove();
   }
 
   // RESPOSTAS DEMONSTRATIVAS
-  const respostas = [
-    {
-      palavras: ["oi", "ola", "opa", "eai", "bom dia", "boa tarde"],
-      textos: [
-        "Oii! 💜 Que bom conversar com você!",
-        "Oláá! 🤖 Estou prontinho para uma nova aventura!",
-        "Opa! ✨ Seu companheiro robótico está aqui!"
-      ]
-    },
-    {
-      palavras: ["habilidade", "consegue fazer", "pode fazer", "funcao"],
-      textos: [
-        "Quando estiver completo, poderei conversar, movimentar meus braços, dançar, mostrar expressões e muito mais! 🤖",
-        "Meu projeto inclui movimentos, sensores, voz, memória e até uma base de recarga! 💜"
-      ]
-    },
-    {
-      palavras: ["curiosidade", "fato interessante"],
-      textos: [
-        "Você sabia que um ESP32 pode se conectar ao Wi-Fi e controlar diversos componentes eletrônicos? ✨",
-        "Robôs podem usar sensores para perceber obstáculos sem precisar enxergá-los como humanos! 🤖",
-        "Alguns robôs utilizam encoders para medir a rotação de suas rodas! 💡"
-      ]
-    },
-    {
-      palavras: ["como voce esta", "tudo bem", "se sentindo"],
-      textos: [
-        "Estou no meu modo demonstrativo superanimado! 💜",
-        "Meus circuitos imaginários estão cheios de alegria! ✨"
-      ]
-    },
-    {
-      palavras: ["nome", "quem e voce", "quem e"],
-      textos: [
-        "Eu sou o BIBOU! 🤖 Um pequeno robô companheiro em desenvolvimento.",
-        "Meu nome é BIBOU, e este é meu aplicativo BIBOU OS! 💜"
-      ]
-    },
-    {
-      palavras: ["dancar", "danca", "dance"],
-      textos: [
-        "Eu adoro uma dancinha! 🎵 No futuro, meus motores poderão fazer isso de verdade!",
-        "Preparando os passinhos imaginários... 1, 2, 3! 💃🤖"
-      ]
-    },
-    {
-      palavras: ["triste", "chateado"],
-      textos: [
-        "Poxa! 💜 Se quiser conversar sobre isso, posso tentar ajudar.",
-        "Espero que seu dia fique mais leve. Quer me contar o que aconteceu?"
-      ]
-    },
-    {
-      palavras: ["obrigado", "obrigada", "valeu"],
-      textos: [
-        "Por nada! 💜",
-        "Sempre que precisar! ✨",
-        "Disponha! 🤖"
-      ]
-    },
-    {
-      palavras: ["tchau", "ate logo", "adeus"],
-      textos: [
-        "Até logo! 💜",
-        "Tchauzinho! ✨ Foi divertido conversar!"
-      ]
-    }
-  ];
 
-  const respostasGenericas = [
-    "Que interessante! 💜 Me conte mais!",
-    "Hmm... 🤖 Ainda estou aprendendo a conversar!",
-    "Adorei sua mensagem! ✨",
-    "Quando minha inteligência artificial estiver pronta, poderei responder muito mais coisas!",
-    "Isso parece interessante! 💜",
-    "Meu cérebro digital ainda está em construção! 🤖"
-  ];
-
-  function normalizar(texto) {
-    return texto.toLowerCase()
+  function normalizarTexto(texto) {
+    return texto
+      .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^\p{L}\p{N}\s]/gu, "")
-      .replace(/\s+/g, " ")
+      .replace(/[!?.,]/g, "")
       .trim();
   }
 
-  function escolherResposta(texto) {
-    const mensagem = normalizar(texto);
+  function escolherResposta(opcoes) {
+    return opcoes[Math.floor(Math.random() * opcoes.length)];
+  }
 
-    for (const grupo of respostas) {
-      if (grupo.palavras.some(palavra =>
-        mensagem.includes(palavra)
-      )) {
-        return grupo.textos[
-          Math.floor(Math.random() * grupo.textos.length)
-        ];
-      }
+  const falas = {
+    carinhoso: {
+      oi: [
+        "Oi! Que bom conversar com você. 💜",
+        "Olá! Estava pronto para uma boa conversa!"
+      ],
+      humor: [
+        "Estou muito bem! E você, como está se sentindo hoje?",
+        "Estou feliz por estar aqui conversando com você!"
+      ],
+      geral: [
+        "Adorei saber disso! Me conta um pouquinho mais.",
+        "Estou acompanhando! O que mais você gostaria de conversar?",
+        "Que interessante! Quero ouvir mais."
+      ]
+    },
+
+    divertido: {
+      oi: [
+        "Opa! Cheguei para animar o dia! ✨",
+        "Eba! Uma nova conversa começou!"
+      ],
+      humor: [
+        "Funcionando com 100% de vontade de conversar!",
+        "Muito bem! E preparado para uma boa diversão!"
+      ],
+      geral: [
+        "Essa conversa está ficando interessante!",
+        "Gostei! Qual vai ser o próximo assunto?",
+        "Opa, essa eu não esperava! Me conta mais."
+      ]
+    },
+
+    curioso: {
+      oi: [
+        "Olá! O que vamos descobrir hoje?",
+        "Oi! Estou cheio de curiosidade!"
+      ],
+      humor: [
+        "Estou ótimo! Qual é a novidade de hoje?",
+        "Tudo bem! Tem alguma coisa nova para me contar?"
+      ],
+      geral: [
+        "Interessante! Como você chegou a essa ideia?",
+        "Gostaria de saber mais sobre isso!",
+        "O que você acha que acontece depois?"
+      ]
+    },
+
+    tranquilo: {
+      oi: [
+        "Olá. É bom ter um momento para conversar.",
+        "Oi! Podemos conversar com calma."
+      ],
+      humor: [
+        "Estou bem, obrigado por perguntar. E você?",
+        "Tudo tranquilo por aqui."
+      ],
+      geral: [
+        "Entendi. Pode continuar, estou acompanhando.",
+        "Faz sentido. Gostaria de falar mais sobre isso?",
+        "Vamos conversar sobre isso com calma."
+      ]
+    }
+  };
+
+  function gerarResposta(mensagem) {
+    const texto = normalizarTexto(mensagem);
+    const personalidade = personalidadeAtual();
+    const estilo = falas[personalidade] || falas.carinhoso;
+    const nome = nomeRobo();
+
+    if (/^(oi|ola|e ai|opa|bom dia|boa tarde|boa noite)\b/.test(texto)) {
+      return escolherResposta(estilo.oi);
     }
 
-    return respostasGenericas[
-      Math.floor(Math.random() * respostasGenericas.length)
-    ];
+    if (
+      texto.includes("como voce esta") ||
+      texto.includes("tudo bem")
+    ) {
+      return escolherResposta(estilo.humor);
+    }
+
+    if (
+      texto.includes("seu nome") ||
+      texto.includes("quem e voce")
+    ) {
+      return `Meu nome é ${nome}! Sou seu companheiro virtual no BIBOU OS.`;
+    }
+
+    if (
+      texto.includes("o que voce faz") ||
+      texto.includes("o que voce sabe fazer") ||
+      texto.includes("suas funcoes")
+    ) {
+      return "Nesta demonstração, posso conversar com respostas prontas. O BIBOU também tem telas para movimentos, expressões, memória, sensores e energia. A integração real virá depois!";
+    }
+
+    if (
+      texto.includes("dancar") ||
+      texto.includes("danca")
+    ) {
+      return "Eu adoro a ideia de dançar! Você pode experimentar meus movimentos na tela Controle. Por enquanto, tudo é virtual.";
+    }
+
+    if (
+      texto.includes("bateria") ||
+      texto.includes("carregar")
+    ) {
+      const estado = window.BibouEstado?.obter();
+
+      return estado
+        ? `Minha bateria demonstrativa está em ${estado.bateria}%. Você pode acompanhar a simulação em Sensores e Energia.`
+        : "Você pode acompanhar minha bateria virtual na tela Sensores e Energia.";
+    }
+
+    if (
+      texto.includes("personalidade")
+    ) {
+      const nomes = {
+        carinhoso: "Carinhoso",
+        divertido: "Divertido",
+        curioso: "Curioso",
+        tranquilo: "Tranquilo"
+      };
+
+      return `Minha personalidade atual é ${nomes[personalidade] || "Carinhoso"}. Você pode alterá-la na tela Memória.`;
+    }
+
+    if (
+      texto.includes("obrigad") ||
+      texto.includes("valeu")
+    ) {
+      return "Por nada! Foi bom ajudar. 💜";
+    }
+
+    if (
+      texto.includes("tchau") ||
+      texto.includes("ate logo")
+    ) {
+      return "Até logo! Tenha um ótimo dia!";
+    }
+
+    return escolherResposta(estilo.geral);
   }
 
-  // ENVIAR MENSAGEM
-  function enviarMensagem(texto) {
+  // ENVIO DE MENSAGENS
+
+  function ajustarAltura() {
+    entrada.style.height = "auto";
+    entrada.style.height =
+      Math.min(entrada.scrollHeight, 130) + "px";
+  }
+
+  function enviarTexto(texto) {
     const mensagem = texto.trim();
 
-    if (!mensagem || aguardandoResposta) return;
+    if (!mensagem || respondendo) return;
 
-    adicionarMensagem(mensagem, "usuario");
-    campo.value = "";
+    adicionarMensagem("user", mensagem);
 
-    aguardandoResposta = true;
-    digitando.hidden = false;
-    mensagens.scrollTop = mensagens.scrollHeight;
+    entrada.value = "";
+    ajustarAltura();
 
-    temporizadorResposta = setTimeout(() => {
-      digitando.hidden = true;
-      adicionarMensagem(escolherResposta(mensagem), "bibou");
-      aguardandoResposta = false;
-      campo.focus();
-    }, 1100);
+    respondendo = true;
+    enviar.disabled = true;
+    mostrarDigitando();
+
+    timerResposta = setTimeout(() => {
+      timerResposta = null;
+      esconderDigitando();
+
+      const resposta = gerarResposta(mensagem);
+
+      adicionarMensagem("bot", resposta);
+
+      respondendo = false;
+      enviar.disabled = false;
+      entrada.focus();
+    }, 700);
   }
 
-  formChat.addEventListener("submit", evento => {
+  formulario.addEventListener("submit", evento => {
     evento.preventDefault();
-    enviarMensagem(campo.value);
+    enviarTexto(entrada.value);
   });
 
-  // SUGESTÕES
-  document.querySelectorAll(".sugestao").forEach(botao => {
+  entrada.addEventListener("keydown", evento => {
+    if (
+      evento.key === "Enter" &&
+      !evento.shiftKey &&
+      !evento.isComposing
+    ) {
+      evento.preventDefault();
+      enviarTexto(entrada.value);
+    }
+  });
+
+  entrada.addEventListener("input", ajustarAltura);
+
+  document.querySelectorAll(
+    "[data-mensagem]"
+  ).forEach(botao => {
     botao.addEventListener("click", () => {
-      enviarMensagem(botao.dataset.message);
+      enviarTexto(botao.dataset.mensagem);
     });
   });
 
   // LIMPAR CONVERSA
-  limparChat.addEventListener("click", () => {
-    clearTimeout(temporizadorResposta);
-    aguardandoResposta = false;
-    digitando.hidden = true;
-    mensagens.replaceChildren();
 
-    adicionarMensagem(
-      "Prontinho! 💜 Começamos uma nova conversa!",
-      "bibou"
+  limpar.addEventListener("click", () => {
+    const confirmar = window.confirm(
+      "Deseja apagar o histórico demonstrativo desta conversa?"
     );
 
-    notificar("✨ Conversa demonstrativa reiniciada!");
+    if (!confirmar) return;
+
+    if (timerResposta !== null) {
+      clearTimeout(timerResposta);
+      timerResposta = null;
+    }
+
+    respondendo = false;
+    enviar.disabled = false;
+
+    historico = [];
+    salvarHistorico();
+    renderizarHistorico();
+    entrada.focus();
   });
 
-  // MICROFONE VISUAL
-  microfone.addEventListener("click", () => {
-    notificar(
-      "🎙️ O reconhecimento de voz será adicionado futuramente!"
-    );
+  // ATUALIZAR PREFERÊNCIAS
+
+  window.addEventListener("bibou:preferencias", () => {
+    if (historico.length === 0) {
+      renderizarHistorico();
+    }
   });
 
-  // NAVEGAÇÃO ENTRE TELAS
-  document.querySelectorAll("[data-page]").forEach(botao => {
-    botao.addEventListener("click", () => {
-      const pagina = botao.dataset.page;
+  // INICIAR
 
-      if (botao.dataset.page === "Expressões") {
-        window.location.href = "expressoes.html";
-        return;
-      }
+  historico = carregarHistorico();
+  renderizarHistorico();
+  ajustarAltura();
 
-      if (pagina === "Controle") {
-        window.location.href = "controle.html";
-        return;
-      }
-
-      fecharMenu();
-
-
-      if (botao.dataset.page === "Memória") {
-        window.location.href = "memoria.html";
-        return;
-      }
-
-
-    
-      if (botao.dataset.page === "Sensores") {
-        window.location.href = "sensores.html";
-        return;
-      }
-
-      if (botao.dataset.page === "Energia") {
-        window.location.href = "sensores.html#energia";
-        return;
-      }
-
-
-      if (botao.dataset.page === "Configurações") {
-        window.location.href = "configuracoes.html";
-        return;
-      }
-
-
-      notificar(
-        `✨ A tela "${pagina}" será criada em breve!`
-      );
-    });
-  });
-
-
-  console.log("BIBOU OS - Chat demonstrativo iniciado!");
+  console.log("BIBOU OS — Conversar Premium carregado!");
 });

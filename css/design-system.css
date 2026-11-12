@@ -1,0 +1,520 @@
+
+/* ==========================================
+   BIBOU OS - DESIGN SYSTEM
+   Versão 1.0
+   Identidade visual compartilhada
+========================================== */
+
+/* 1. CORES E VARIÁVEIS */
+
+:root {
+  --fundo: #100b20;
+  --sidebar: #171027;
+  --card: #211733;
+  --card-hover: #302044;
+  --roxo: #a978ff;
+  --lilas: #d9baff;
+  --rosa: #ff9fe3;
+  --branco: #faf6ff;
+  --cinza: #b9aecb;
+  --borda: #ffffff12;
+
+  --bibou-success: #78e7b1;
+  --bibou-warning: #ffcc83;
+  --bibou-danger: #ff9b9b;
+
+  --bibou-radius-sm: 10px;
+  --bibou-radius-md: 15px;
+  --bibou-radius-lg: 20px;
+  --bibou-radius-xl: 24px;
+
+  --bibou-shadow:
+    0 12px 35px rgba(0, 0, 0, .15);
+
+  --bibou-transition: .22s ease;
+}
+
+/* 2. BASE GLOBAL */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 85px;
+}
+
+body {
+  background: var(--fundo);
+  color: var(--branco);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* 3. ACESSIBILIDADE */
+
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea
+):focus-visible {
+  outline: 2px solid var(--rosa);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #a978ff70;
+  color: #fff;
+}
+
+/* 4. CARTÕES COMPARTILHADOS */
+
+.card {
+  border-radius: var(--bibou-radius-lg);
+  border: 1px solid var(--borda);
+  box-shadow: var(--bibou-shadow);
+  transition:
+    border-color var(--bibou-transition),
+    box-shadow var(--bibou-transition);
+}
+
+.card:hover {
+  border-color: #a978ff30;
+}
+
+.card:focus-within {
+  border-color: #a978ff50;
+}
+
+/* 5. MENU LATERAL */
+
+.sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--borda);
+}
+
+.sidebar .menu-item {
+  border-radius: 12px;
+  transition:
+    background var(--bibou-transition),
+    color var(--bibou-transition);
+}
+
+.sidebar .menu-item:hover {
+  background: #a978ff18;
+  color: var(--branco);
+}
+
+.sidebar .menu-item.ativo,
+.sidebar .menu-item[aria-current="page"] {
+  background: #a978ff28;
+  color: var(--lilas);
+}
+
+/* 6. CABEÇALHO */
+
+.topbar {
+  border-bottom-color: var(--borda);
+}
+
+.topbar h1 span {
+  color: var(--rosa);
+}
+
+.topbar-label {
+  letter-spacing: 1.5px;
+}
+
+/* 7. BOTÕES COMPARTILHADOS */
+
+:is(
+  .exp-primary,
+  .mem-primary,
+  .sen-button-primary,
+  .cfg-primary
+) {
+  background: linear-gradient(
+    120deg,
+    #c69aff,
+    #ffabe4
+  );
+  color: #21132f;
+  border: 0;
+  border-radius: 13px;
+  font-weight: 900;
+  transition:
+    transform var(--bibou-transition),
+    box-shadow var(--bibou-transition),
+    filter var(--bibou-transition);
+}
+
+:is(
+  .exp-primary,
+  .mem-primary,
+  .sen-button-primary,
+  .cfg-primary
+):hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px #a978ff30;
+}
+
+:is(
+  .exp-secondary,
+  .sen-button-outline,
+  .cfg-secondary
+) {
+  border: 1px solid #a978ff55;
+  background: #a978ff15;
+  color: var(--lilas);
+  border-radius: 13px;
+}
+
+:is(
+  .exp-primary,
+  .mem-primary,
+  .sen-button-primary,
+  .cfg-primary,
+  .exp-secondary,
+  .sen-button-outline,
+  .cfg-secondary
+):active:not(:disabled) {
+  transform: scale(.98);
+}
+
+/* 8. FORMULÁRIOS */
+
+:is(
+  .mem-form input,
+  .mem-form select,
+  .mem-form textarea,
+  .cfg-form > input,
+  .cfg-form > select
+) {
+  background: #150e26;
+  color: var(--branco);
+  border: 1px solid #a978ff35;
+  border-radius: 12px;
+  transition:
+    border-color var(--bibou-transition),
+    box-shadow var(--bibou-transition);
+}
+
+:is(
+  .mem-form input,
+  .mem-form select,
+  .mem-form textarea,
+  .cfg-form > input,
+  .cfg-form > select
+):focus {
+  border-color: var(--roxo);
+  box-shadow: 0 0 0 3px #a978ff18;
+}
+
+/* 9. CONTROLES DESLIZANTES */
+
+input[type="range"] {
+  accent-color: var(--roxo);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--roxo);
+}
+
+/* 10. ETIQUETAS E TEXTOS */
+
+:is(
+  .exp-etiqueta,
+  .mem-label,
+  .sen-label,
+  .cfg-label
+) {
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+:is(
+  .exp-description,
+  .mem-description,
+  .sen-description
+) {
+  color: var(--cinza);
+  line-height: 1.75;
+}
+
+/* 11. RODAPÉ */
+
+.rodape {
+  color: var(--cinza);
+  border-top-color: var(--borda);
+}
+
+/* 12. ELEMENTOS INTERATIVOS */
+
+:is(
+  .exp-option,
+  .mem-personalidade,
+  .cfg-found-device
+) {
+  transition:
+    background var(--bibou-transition),
+    border-color var(--bibou-transition),
+    transform var(--bibou-transition);
+}
+
+:is(
+  .exp-option,
+  .mem-personalidade
+):hover {
+  border-color: #a978ff80;
+}
+
+/* 13. RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+  .conteudo {
+    min-width: 0;
+  }
+
+  .card {
+    min-width: 0;
+  }
+
+  :is(
+    .exp-hero,
+    .mem-hero,
+    .sen-hero,
+    .cfg-hero
+  ) {
+    border-radius: 20px;
+  }
+
+  :is(
+    .exp-layout,
+    .mem-grid,
+    .sen-grid,
+    .cfg-grid
+  ) {
+    gap: 15px;
+  }
+
+  .rodape {
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  :is(
+    .exp-hero,
+    .mem-hero,
+    .sen-hero,
+    .cfg-hero
+  ) {
+    padding: 22px 18px;
+  }
+
+  :is(
+    .exp-hero,
+    .mem-hero,
+    .sen-hero,
+    .cfg-hero
+  ) h2 {
+    line-height: 1.25;
+  }
+
+  :is(
+    .exp-preview-actions,
+    .sen-charge-buttons,
+    .cfg-connection-actions
+  ) button {
+    min-height: 42px;
+  }
+}
+
+/* 14. MOVIMENTO REDUZIDO */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* =====================================
+   BIBOU OS - PREFERÊNCIAS COMPARTILHADAS
+===================================== */
+
+.bibou-shared-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 24px;
+  margin-bottom: 22px;
+  border: 1px solid #a978ff35;
+  border-radius: 20px;
+  background: linear-gradient(
+    120deg,
+    #302044,
+    #211733
+  );
+}
+
+.bibou-shared-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 25px;
+  background: #a978ff20;
+  font-size: 45px;
+  box-shadow: 0 0 25px #a978ff15;
+}
+
+.bibou-shared-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.bibou-shared-content > span {
+  color: #ff9fe3;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.bibou-shared-content h2 {
+  margin: 9px 0;
+  font-size: clamp(20px, 3vw, 27px);
+}
+
+.bibou-shared-content h2 span {
+  color: #d9baff;
+  overflow-wrap: anywhere;
+}
+
+.bibou-shared-content p {
+  color: #b9aecb;
+  font-size: 13px;
+}
+
+.bibou-shared-content p strong {
+  color: #faf6ff;
+}
+
+.bibou-shared-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.bibou-shared-tags > span {
+  padding: 9px 13px;
+  background: #a978ff20;
+  border: 1px solid #a978ff30;
+  border-radius: 20px;
+  color: #d9baff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 480px) {
+  .bibou-shared-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .bibou-shared-icon {
+    width: 65px;
+    height: 65px;
+    font-size: 35px;
+  }
+}
+
+
+/* PRÉVIA DE PERSONALIDADE NO CHAT */
+
+.bibou-chat-personality {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 17px 20px;
+  margin-bottom: 18px;
+  background: linear-gradient(
+    120deg,
+    #302044,
+    #211733
+  );
+  border: 1px solid #a978ff35;
+  border-radius: 18px;
+}
+
+.bibou-chat-personality-icon {
+  width: 55px;
+  height: 55px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #a978ff20;
+  border-radius: 16px;
+  font-size: 26px;
+}
+
+.bibou-chat-personality small {
+  display: block;
+  color: #ff9fe3;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.bibou-chat-personality strong {
+  display: block;
+  color: #d9baff;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.bibou-chat-personality p {
+  color: #b9aecb;
+  font-size: 12px;
+  line-height: 1.6;
+}
